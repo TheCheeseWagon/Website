@@ -1,1 +1,332 @@
-PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+VGhlIENoZWVzZSBXYWdvbiAtIEdvdXJtZXQgR3JpbGxlZC4uLi4uLi4uLi4uLi4uLi4uLiBDaGVlc2UgRm9vZCBUcnVjazwvdGl0bGU+CgogICAgPCEtLSBGb250IEF3ZXNvbWUgZm9yIGljb25zIC0tPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJodHRwczovL2NkbmpzLmNsb3VkZmxhcmUuY29tL2FqYXgvbGlicy9mb250LWF3ZXNvbWUvNi4wLjAvY3NzL2FsbC5taW4uY3NzIj4KCiAgICA8IS0tIEdvb2dsZSBGb250cyAtLT4KICAgIDxsaW5rIGhyZWY9Imh0dHBzOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20vY3NzMj9mYW1pbHk9RnJlZG9rYStPbmU6d2dodEA0MDAmZmFtaWx5PU51bml0bzp3Z2h0QDMwMDs0MDA7NjAwOzcwMCZkaXNwbGF5PXN3YXAiIHJlbD0ic3R5bGVzaGVldCI+CgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJzdHlsZS5jc3MiPgo8L2hlYWQ+Cjxib2R5Pgo8aGVhZGVyPgogICAgPGRpdiBjbGFzcz0iY29udGFpbmVyIj4KICAgICAgICA8ZGl2IGNsYXNzPSJoZWFkZXItY29udGVudCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImJyYW5kaW5nLWJhciIgc3R5bGU9ImRpc3BsYXk6IGZsZXg7IGFsaWduLWl0ZW1zOiBjZW50ZXI7Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvZ28tY29udGFpbmVyIj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJsb2dvLWltYWdlIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9ImltYWdlcy9sb2dvLnBuZyIgYWx0PSJUaGUgQ2hlZXNlIFdhZ29uIExvZ28iPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8YnV0dG9uIGNsYXNzPSJuYXYtdG9nZ2xlIiBhcmlhLWxhYmVsPSJPcGVuIE1lbnUiPgogICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJidXJnZXIiPjwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8c3BhbiBjbGFzcz0iYnVyZ2VyIj48L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgPHNwYW4gY2xhc3M9ImJ1cmdlciI+PC9zcGFuPgogICAgICAgICAgICAgICAgPC9idXR0b24+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8bmF2PgogICAgICAgICAgICAgICAgPHVsPgogICAgICAgICAgICAgICAgICAgIDxsaT48YSBocmVmPSIjaG9tZSI+SG9tZTwvYT48L2xpPgogICAgICAgICAgICAgICAgICAgIDxsaT48YSBocmVmPSIjbWVudSI+TWVudTwvYT48L2xpPgogICAgICAgICAgICAgICAgICAgIDxsaT48YSBocmVmPSIjbG9jYXRpb25zIj5Mb2NhdGlvbnM8L2E+PC9saT4KICAgICAgICAgICAgICAgICAgICA8bGk+PGEgaHJlZj0iI3Jldmlld3MiPlJldmlld3M8L2E+PC9saT4KICAgICAgICAgICAgICAgICAgICA8bGk+PGEgaHJlZj0iI3NvY2lhbCI+U29jaWFsPC9hPjwvbGk+CiAgICAgICAgICAgICAgICAgICAgPGxpPjxhIGhyZWY9IiNjb250YWN0Ij5Db250YWN0PC9hPjwvbGk+CiAgICAgICAgICAgICAgICA8L3VsPgogICAgICAgICAgICA8L25hdj4KICAgICAgICA8L2Rpdj4KICAgIDwvZGl2Pgo8L2hlYWRlcj4KCiAgICAgIAoKICAgIDxzZWN0aW9uIGlkPSJob21lIiBjbGFzcz0iaGVybyI+CiAgICAgICAgPGRpdiBjbGFzcz0iY29udGFpbmVyIj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0iaGVyby1jb250ZW50Ij4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9Imhlcm8tbG9nbyI+CiAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9ImltYWdlcy90cnVjay5wbmciIGFsdD0iVGhlIENoZWVzZSBXYWdvbiBMb2dvIj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGgxPldlbGNvbWUgdG8gVGhlIENoZWVzZSBXYWdvbjwvaDE+CiAgICAgICAgICAgICAgICA8cD5Hb3VybWV0IEdyaWxsZWQgQ2hlZXNlICYgQnJlYWtmYXN0IFNhbmR3aWNoZXMgb24gV2hlZWxzPC9wPgogICAgICAgICAgICAgICAgPGEgaHJlZj0iI21lbnUiIGNsYXNzPSJjdGEtYnV0dG9uIj4KICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXV0ZW5zaWxzIj48L2k+IFZpZXcgT3VyIE1lbnUKICAgICAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICA8L3NlY3Rpb24+CgogICAgPHNlY3Rpb24gY2xhc3M9ImZlYXR1cmVzIj4KICAgICAgICA8ZGl2IGNsYXNzPSJjb250YWluZXIiPgogICAgICAgICAgICA8aDI+V2h5IENob29zZSBUaGUgQ2hlZXNlIFdhZ29uPzwvaDI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZlYXR1cmVzLWdyaWQiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmVhdHVyZS1jYXJkIGhvdmVyLWxpZnQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZlYXR1cmUtaWNvbiI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtY2hlZXNlIj48L2k+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGgzPkdvdXJtZXQgR3JpbGxlZCBDaGVlc2U8L2gzPgogICAgICAgICAgICAgICAgICAgIDxwPkZyb20gY2xhc3NpYyBjb21mb3J0IHRvIGNyZWF0aXZlIGNvbWJpbmF0aW9ucyBsaWtlIG91ciBmYW1vdXMgRmlyZWhvdXNlIHNhbmR3aWNoIHdpdGggZ3JhcGUgamVsbHksIGphbGFwZcOxb3MsIGJhY29uLCBhbmQgU3dpc3MgY2hlZXNlLjwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmVhdHVyZS1jYXJkIGhvdmVyLWxpZnQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZlYXR1cmUtaWNvbiI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtZWdnIj48L2k+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGgzPkZyZXNoIEJyZWFrZmFzdDwvaDM+CiAgICAgICAgICAgICAgICAgICAgPHA+U3RhcnQgeW91ciBkYXkgcmlnaHQgd2l0aCBvdXIgaGVhcnR5IGJyZWFrZmFzdCBzYW5kd2ljaGVzLCBiYWdlbHMsIGFuZCBxdWVzYWRpbGxhcyBtYWRlIGZyZXNoIHRvIG9yZGVyIGV2ZXJ5IG1vcm5pbmcuPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmZWF0dXJlLWNhcmQgaG92ZXItbGlmdCI+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZmVhdHVyZS1pY29uIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1tYXAtbWFya2VyLWFsdCI+PC9pPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxoMz5Ud28gR3JlYXQgTG9jYXRpb25zPC9oMz4KICAgICAgICAgICAgICAgICAgICA8cD5GaW5kIHVzIGF0IEVsZWN0cmljIENvZmZlZSBTaG9wIGluIFBvcnQgSHVyb24gYW5kIExleGluZ3RvbiBDb2ZmZWUgU2hvcCAtIHlvdXIgcGVyZmVjdCBwYWlyaW5nIG9mIGdyZWF0IGNvZmZlZSBhbmQgYW1hemluZyBmb29kITwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgIDwvc2VjdGlvbj4KCiAgICA8c2VjdGlvbiBpZD0ibWVudSIgY2xhc3M9Im1lbnUiPgogICAgICAgIDxkaXYgY2xhc3M9ImNvbnRhaW5lciI+CiAgICAgICAgICA8aDI+T3VyIERlbGljaW91cyBNZW51PC9oMj4KICAgICAgICAgIDxkaXYgY2xhc3M9Im1lbnUtY2FyZC1ncmlkIiBpZD0ibWVudS1jYXJkLWdyaWQiPgogICAgICAgICAgICA8IS0tIER5bmFtaWMgbWVudSBjYXJkcyBnbyBoZXJlIC0tPgogICAgICAgICAgPC9kaXY+CiAgICAgICAgICA8ZGl2IHN0eWxlPSJ0ZXh0LWFsaWduOiBjZW50ZXI7IG1hcmdpbi10b3A6IDJyZW07Ij4KICAgICAgICAgICAgPHAgc3R5bGU9ImNvbG9yOiAjZWVlOyBmb250LXN0eWxlOiBpdGFsaWM7Ij4KICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXBob25lIj48L2k+IENhbGwgdXMgYXQgKDcxNykgNzQyLTA2NjQgZm9yIHNwZWNpYWwgb3JkZXJzIG9yIGNhdGVyaW5nIQogICAgICAgICAgICA8L3A+CiAgICAgICAgICA8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgPC9zZWN0aW9uPgogICAgICAKCiAgICA8c2VjdGlvbiBpZD0icmV2aWV3cyIgY2xhc3M9InJldmlld3MiPgogICAgICAgIDxkaXYgY2xhc3M9ImNvbnRhaW5lciI+CiAgICAgICAgICAgIDxoMj5XaGF0IE91ciBDdXN0b21lcnMgU2F5PC9oMj4KICAgICAgICAgICAgPGRpdiBjbGFzcz0icmV2aWV3cy1ncmlkIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InJldmlldy1jYXJkIj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJzdGFycyI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXN0YXIiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1zdGFyIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXN0YXIiPjwvaT4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXctdGV4dCI+CiAgICAgICAgICAgICAgICAgICAgICAgICJUaGUgZm9vZCB0cnVja3Mgd2UgaGF2ZSBpbiBQb3J0IEh1cm9uIGFyZSBhd2Vzb21lLCBidXQgdGhlIGNoZWVzZSB3YWdvbiBoYXMgdG8gYmUgbXkgZmF2b3JpdGUuIEkgbWVhbiwgd2hvIGRvZXNuJ3QgbG92ZSBicmVha2Zhc3Qgc2FuZHdpY2hlcyBhbmQgZ3JpbGxlZCBjaGVlc2U/ISBUaGUgZm9vZCBhbHdheXMgY29tZXMgb3V0IGhvdCBhbmQgZnJlc2gsIGFzIGl0IGlzIG1hZGUgdG8gb3JkZXIsIGFuZCB2ZXJ5IHF1aWNrbHkgdG9vLiIKICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXdlciI+S2VsbGkgSy48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXctc291cmNlIj5ZZWxwIFJldmlldzwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icmV2aWV3LWNhcmQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InN0YXJzIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1zdGFyIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXN0YXIiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1zdGFyIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InJldmlldy10ZXh0Ij4KICAgICAgICAgICAgICAgICAgICAgICAgIlRoaXMgbW9ybmluZyBJIGZpbmlzaGVkIGFuIGFtYXppbmcgeW9nYSBjbGFzcyBkb3duIHRoZSByb2FkIGFuZCBzdG9wcGVkIGJ5IGZvciB0aGUgRWxlY3RyaWMgQ29tcGFueSBmb3IgYSBjb2ZmZWUuLi4gTG8gYW5kIGJlaG9sZCBhIGJlYWNvbiBvZiBjaGVlc2Ugd2FzIGluIHRoZSBsb3QuIFRoZSBoeXBub3RpYyB5ZWxsb3cgc2hhY2sgb24gd2hlZWxzLi4uIEhlYXZlbi0gVGV4YXMgVG9hc3QsIGVnZywgYW1wbGUgYmFjb24sIEFtZXJpY2FuIGNoZWVzZS4uLiB0aGUgd2Fnb24gYW5kIEkgaGF2ZSBtZXJnZWQtIFdlIHdlcmUgb25lIGluIHRoZSBjaGVlc2UuIgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InJldmlld2VyIj5DaHJpc3RpbmEgRy48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXctc291cmNlIj5ZZWxwIFJldmlldzwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icmV2aWV3LWNhcmQiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InN0YXJzIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1zdGFyIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXN0YXIiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1zdGFyIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtc3RhciI+PC9pPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InJldmlldy10ZXh0Ij4KICAgICAgICAgICAgICAgICAgICAgICAgIkp1c3QgaGFkIHRoZWlyIGZvb2QgZm9yIHRoZSBmaXJzdCB0aW1lIGFuZCBpdCB3YXMgYW1hemluZy4uIGJlc3Qgc2FuZHdpY2hlcyBJIGhhZCBpbiBhIGxvbmcgdGltZSIKICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXdlciI+U2FtYW50aGEgSC48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXZpZXctc291cmNlIj5ZZWxwIFJldmlldzwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgoKICAgIDxzZWN0aW9uIGlkPSJsb2NhdGlvbnMiIGNsYXNzPSJsb2NhdGlvbiI+CiAgICAgICAgPGRpdiBjbGFzcz0iY29udGFpbmVyIj4KICAgICAgICAgICAgPGgyPkZpbmQgVXMgSGVyZTwvaDI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9ucy1ncmlkIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWNhcmQiPgogICAgICAgICAgICAgICAgICAgIDxoMz48aSBjbGFzcz0iZmFzIGZhLWNvZmZlZSI+PC9pPiBFbGVjdHJpYyBDb2ZmZWUgU2hvcDwvaDM+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ibG9jYXRpb24taW5mbyI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtbWFwLW1hcmtlci1hbHQiPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4+MjgwMyBTdG9uZSBTdCwgUG9ydCBIdXJvbiwgTUkgNDgwNjA8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ibG9jYXRpb24taW5mbyI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtY2xvY2siPjwvaT4KICAgICAgICAgICAgICAgICAgICAgICAgPHNwYW4+VGh1cnNkYXkgLSBTdW5kYXk6IDg6MDAgQU0gLSAxOjAwIFBNPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWluZm8iPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXBob25lIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPig3MTcpIDc0Mi0wNjY0PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWluZm8iPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLWluZm8tY2lyY2xlIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPlBlcmZlY3QgcGFpcmluZyB3aXRoIGZyZXNoIGNvZmZlZSE8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWNhcmQiPgogICAgICAgICAgICAgICAgICAgIDxoMz48aSBjbGFzcz0iZmFzIGZhLWNvZmZlZSI+PC9pPiBMZXhpbmd0b24gQ29mZmVlIFNob3A8L2gzPgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWluZm8iPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLW1hcC1tYXJrZXItYWx0Ij48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPjU1MzMgTWFpbiBTdCwgTGV4aW5ndG9uLCBNSSA0ODQ1MDwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJsb2NhdGlvbi1pbmZvIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhcyBmYS1jbG9jayI+PC9pPgogICAgICAgICAgICAgICAgICAgICAgICA8c3Bhbj5TYXR1cmRheSAtIFN1bmRheTogODowMCBBTSAtIDEyOjAwIFBNPC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWluZm8iPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLXBob25lIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPig3MTcpIDc0Mi0wNjY0PC9zcGFuPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImxvY2F0aW9uLWluZm8iPgogICAgICAgICAgICAgICAgICAgICAgICA8aSBjbGFzcz0iZmFzIGZhLWluZm8tY2lyY2xlIj48L2k+CiAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuPkJlaGluZCB0aGUgY29mZmVlIHNob3AgLSB3ZWVrZW5kIHNwZWNpYWxzITwvc3Bhbj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KICAgIAogICAgICAgICAgICA8ZGl2IGNsYXNzPSJtYXAtY29udGFpbmVyIiBzdHlsZT0ibWFyZ2luLXRvcDogMi41ZW07Ij4KICAgICAgICAgICAgICAgIDxoMz5JbnRlcmFjdGl2ZSBNYXBzPC9oMz4KICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImRpc3BsYXk6IGZsZXg7IGZsZXgtd3JhcDogd3JhcDsgZ2FwOiAyNHB4OyBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjsiPgogICAgICAgICAgICAgICAgICAgIDxkaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxpZnJhbWUKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNyYz0iaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9tYXBzP3E9MjgwMytTdG9uZStTdCwrUG9ydCtIdXJvbiwrTUkrNDgwNjAmb3V0cHV0PWVtYmVkIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHlsZT0iYm9yZGVyOjA7IGJvcmRlci1yYWRpdXM6IDEycHg7IG1heC13aWR0aDogOTB2dzsiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBhbGxvd2Z1bGxzY3JlZW49IiIgbG9hZGluZz0ibGF6eSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZmVycmVycG9saWN5PSJuby1yZWZlcnJlci13aGVuLWRvd25ncmFkZSI+PC9pZnJhbWU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9InRleHQtYWxpZ246IGNlbnRlcjsgZm9udC1zaXplOjAuOTRlbTsgbWFyZ2luLXRvcDowLjdlbTsiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgMjgwMyBTdG9uZSBTdCwgUG9ydCBIdXJvbiwgTUkgNDgwNjAKICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPGlmcmFtZQogICAgICAgICAgICAgICAgICAgICAgICAgICAgc3JjPSJodHRwczovL3d3dy5nb29nbGUuY29tL21hcHM/cT01NTMzK01haW4rU3QsK0xleGluZ3RvbiwrTUkrNDg0NTAmb3V0cHV0PWVtYmVkIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHlsZT0iYm9yZGVyOjA7IGJvcmRlci1yYWRpdXM6IDEycHg7IG1heC13aWR0aDogOTB2dzsiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBhbGxvd2Z1bGxzY3JlZW49IiIgbG9hZGluZz0ibGF6eSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZmVycmVycG9saWN5PSJuby1yZWZlcnJlci13aGVuLWRvd25ncmFkZSI+PC9pZnJhbWU+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9InRleHQtYWxpZ246IGNlbnRlcjsgZm9udC1zaXplOjAuOTRlbTsgbWFyZ2luLXRvcDowLjdlbTsiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgNTUzMyBNYWluIFN0LCBMZXhpbmd0b24sIE1JIDQ4NDUwCiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2PgogICAgICAgIDwvZGl2PgogICAgPC9zZWN0aW9uPgogICAgCgo8c2VjdGlvbiBpZD0ic29jaWFsIiBjbGFzcz0ic29jaWFsLW1lZGlhIj4KICAgIDxkaXYgY2xhc3M9ImNvbnRhaW5lciI+CiAgICAgICAgPGgyPkZvbGxvdyBPdXIgSm91cm5leTwvaDI+CiAgICAgICAgPGRpdiBjbGFzcz0ic29jaWFsLWxpbmtzIj4KICAgICAgICAgICAgPGEgaHJlZj0iaHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL0NoZWVzZVdhZ29uVHJ1Y2siIGNsYXNzPSJzb2NpYWwtbGluayIgdGFyZ2V0PSJfYmxhbmsiPgogICAgICAgICAgICAgICAgPGkgY2xhc3M9ImZhYiBmYS1mYWNlYm9vay1mIj48L2k+CiAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPGEgaHJlZj0iaHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9jaGVlc2Vfd2Fnb24vIiBjbGFzcz0ic29jaWFsLWxpbmsiIHRhcmdldD0iX2JsYW5rIj4KICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYWIgZmEtaW5zdGFncmFtIj48L2k+CiAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPGEgaHJlZj0iaHR0cHM6Ly93d3cudGlrdG9rLmNvbS9AdGFyeW4uc3RyYXVzc2VyIiBjbGFzcz0ic29jaWFsLWxpbmsiIHRhcmdldD0iX2JsYW5rIj4KICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYWIgZmEtdGlrdG9rIj48L2k+CiAgICAgICAgICAgIDwvYT4KICAgICAgICAgICAgPGEgaHJlZj0idGVsOisxNzE3NzQyMDY2NCIgY2xhc3M9InNvY2lhbC1saW5rIj4KICAgICAgICAgICAgICAgIDxpIGNsYXNzPSJmYXMgZmEtcGhvbmUiPjwvaT4KICAgICAgICAgICAgPC9hPgogICAgICAgIDwvZGl2PgoKICAgICAgICA8ZGl2IGNsYXNzPSJzb2NpYWwtZ3JpZCI+CiAgICAgICAgICAgIDxkaXYgY2xhc3M9Imluc3RhZ3JhbS1lbWJlZCIgc3R5bGU9InBhZGRpbmc6MDsgYmFja2dyb3VuZDpub25lOyBtaW4taGVpZ2h0OjQ4MHB4OyBib3gtc2hhZG93Om5vbmU7IGRpc3BsYXk6YmxvY2s7Ij4KICAgICAgICAgICAgICAgIDxpZnJhbWUgCiAgICAgICAgICAgICAgICAgIHNyYz0iaHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9jaGVlc2Vfd2Fnb24vZW1iZWQvIiAKICAgICAgICAgICAgICAgICAgd2lkdGg9IjEwMCUiIGhlaWdodD0iNDgwIiAKICAgICAgICAgICAgICAgICAgZnJhbWVib3JkZXI9IjAiIAogICAgICAgICAgICAgICAgICBzY3JvbGxpbmc9Im5vIiAKICAgICAgICAgICAgICAgICAgYWxsb3d0cmFuc3BhcmVuY3k9InRydWUiIAogICAgICAgICAgICAgICAgICBzdHlsZT0iYm9yZGVyOm5vbmU7b3ZlcmZsb3c6aGlkZGVuO2JvcmRlci1yYWRpdXM6MTJweDsiPgogICAgICAgICAgICAgICAgPC9pZnJhbWU+CiAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPSJtYXJnaW4tdG9wOjEycHg7IGZvbnQtc2l6ZTogMC45M2VtOyBjb2xvcjogIzhCNDUxMzsiPgogICAgICAgICAgICAgICAgICA8Yj4KICAgICAgICAgICAgICAgICAgICBGb2xsb3cgPGEgaHJlZj0iaHR0cHM6Ly93d3cuaW5zdGFncmFtLmNvbS9jaGVlc2Vfd2Fnb24vIiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciIgc3R5bGU9ImNvbG9yOiNGRjhDMDA7Ij5AY2hlZXNlX3dhZ29uPC9hPiBvbiBJbnN0YWdyYW0hCiAgICAgICAgICAgICAgICAgIDwvYj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCjwhLS0gRGVza3RvcC90YWJsZXQgRmFjZWJvb2sgaWZyYW1lIC0tPgo8aWZyYW1lIAogIGNsYXNzPSJmYi1kZXNrdG9wIgogIHNyYz0iaHR0cHM6Ly93d3cuZmFjZWJvb2suY29tL3BsdWdpbnMvcGFnZS5waHA/aHJlZj1odHRwcyUzQSUyRiUyRnd3dy5mYWNlYm9vay5jb20lMkZDaGVlc2VXYWdvblRydWNrJTJGJnRhYnM9dGltZWxpbmUmd2lkdGg9NTAwJmhlaWdodD01MDAmc21hbGxfaGVhZGVyPWZhbHNlJmFkYXB0X2NvbnRhaW5lcl93aWR0aD1mYWxzZSZoaWRlX2NvdmVyPWZhbHNlJnNob3dfZmFjZXBpbGU9ZmFsc2UmYXBwSWQiCiAgd2lkdGg9IjUwMCIgaGVpZ2h0PSI1MDAiCiAgc3R5bGU9ImJvcmRlcjpub25lO292ZXJmbG93OmhpZGRlbiIKICBzY3JvbGxpbmc9Im5vIgogIGZyYW1lYm9yZGVyPSIwIgogIGFsbG93ZnVsbHNjcmVlbj0idHJ1ZSIKICBhbGxvdz0iYXV0b3BsYXk7IGNsaXBib2FyZC13cml0ZTsgZW5jcnlwdGVkLW1lZGlhOyBwaWN0dXJlLWluLXBpY3R1cmU7IHdlYi1zaGFyZSI+CjwvaWZyYW1lPgoKPCEtLSBNb2JpbGUgRmFjZWJvb2sgaWZyYW1lIC0tPgo8aWZyYW1lIAogIGNsYXNzPSJmYi1tb2JpbGUiCiAgc3JjPSJodHRwczovL3d3dy5mYWNlYm9vay5jb20vcGx1Z2lucy9wYWdlLnBocD9ocmVmPWh0dHBzJTNBJTJGJTJGd3d3LmZhY2Vib29rLmNvbSUyRkNoZWVzZVdhZ29uVHJ1Y2slMkYmdGFicz10aW1lbGluZSZ3aWR0aD0zODAmaGVpZ2h0PTUwMCZzbWFsbF9oZWFkZXI9ZmFsc2UmYWRhcHRfY29udGFpbmVyX3dpZHRoPWZhbHNlJmhpZGVfY292ZXI9ZmFsc2Umc2hvd19mYWNlcGlsZT1mYWxzZSZhcHBJZCIKICB3aWR0aD0iMzgwIiBoZWlnaHQ9IjUwMCIKICBzdHlsZT0iYm9yZGVyOm5vbmU7b3ZlcmZsb3c6aGlkZGVuIgogIHNjcm9sbGluZz0ibm8iCiAgZnJhbWVib3JkZXI9IjAiCiAgYWxsb3dmdWxsc2NyZWVuPSJ0cnVlIgogIGFsbG93PSJhdXRvcGxheTsgY2xpcGJvYXJkLXdyaXRlOyBlbmNyeXB0ZWQtbWVkaWE7IHBpY3R1cmUtaW4tcGljdHVyZTsgd2ViLXNoYXJlIj4KPC9pZnJhbWU+CiAgICA8L2Rpdj4KPC9zZWN0aW9uPgoKCiAgICA8Zm9vdGVyIGlkPSJjb250YWN0Ij4KICAgICAgICA8ZGl2IGNsYXNzPSJjb250YWluZXIiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb290ZXItY29udGVudCI+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb290ZXItc2VjdGlvbiI+CiAgICAgICAgICAgICAgICAgICAgPGgzPkNvbnRhY3QgVXM8L2gzPgogICAgICAgICAgICAgICAgICAgIDxwPjxpIGNsYXNzPSJmYXMgZmEtcGhvbmUiPjwvaT4gKDcxNykgNzQyLTA2NjQ8L3A+CiAgICAgICAgICAgICAgICAgICAgPHA+PGkgY2xhc3M9ImZhcyBmYS1lbnZlbG9wZSI+PC9pPiBjaGVlc2V3YWdvbnRydWNrQGdtYWlsLmNvbTwvcD4KICAgICAgICAgICAgICAgICAgICA8cD48aSBjbGFzcz0iZmFzIGZhLW1hcC1tYXJrZXItYWx0Ij48L2k+IFBvcnQgSHVyb24gJiBMZXhpbmd0b24sIE1JPC9wPgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iZm9vdGVyLXNlY3Rpb24iPgogICAgICAgICAgICAgICAgICAgIDxoMz5Ib3VyczwvaDM+CiAgICAgICAgICAgICAgICAgICAgPHA+RWxlY3RyaWMgQ29mZmVlIFNob3AgKFBvcnQgSHVyb24pPC9wPgogICAgICAgICAgICAgICAgICAgIDxwPlRodXJzZGF5IC0gU3VuZGF5OiA4IEFNIC0gMSBQTTwvcD4KICAgICAgICAgICAgICAgICAgICA8cD5MZXhpbmd0b24gQ29mZmVlIFNob3A8L3A+CiAgICAgICAgICAgICAgICAgICAgPHA+U2F0dXJkYXkgLSBTdW5kYXk6IDggQU0gLSAxMiBQTTwvcD4KICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImZvb3Rlci1zZWN0aW9uIj4KICAgICAgICAgICAgICAgICAgICA8aDM+Rm9sbG93IFVzPC9oMz4KICAgICAgICAgICAgICAgICAgICA8cD48YSBocmVmPSJodHRwczovL3d3dy5mYWNlYm9vay5jb20vQ2hlZXNlV2Fnb25UcnVjayI+RmFjZWJvb2s8L2E+PC9wPgogICAgICAgICAgICAgICAgICAgIDxwPjxhIGhyZWY9Imh0dHBzOi8vd3d3Lmluc3RhZ3JhbS5jb20vY2hlZXNlX3dhZ29uLyI+SW5zdGFncmFtPC9hPjwvcD4KICAgICAgICAgICAgICAgICAgICA8cD48YSBocmVmPSJodHRwczovL3d3dy50aWt0b2suY29tL0B0YXJ5bi5zdHJhdXNzZXIiPlRpa1RvazwvYT48L3A+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJmb290ZXItYm90dG9tIj4KICAgICAgICAgICAgICAgIDxwPiZjb3B5OyAyMDI1IFRoZSBDaGVlc2UgV2Fnb24uIEFsbCByaWdodHMgcmVzZXJ2ZWQuIHwgT24gVG91ciBTaW5jZSAyMDIwPC9wPgogICAgICAgICAgICAgICAgPHA+R291cm1ldCBHcmlsbGVkIENoZWVzZSAmIEJyZWFrZmFzdCBTYW5kd2ljaGVzIC0gQmx1ZSBXYXRlciBBcmVhJ3MgRmF2b3JpdGUgRm9vZCBUcnVjazwvcD4KICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgPC9kaXY+CiAgICA8L2Zvb3Rlcj4KCiAgICA8c2NyaXB0IHNyYz0ic2NyaXB0LmpzIj48L3NjcmlwdD4KICAgIAo8L2JvZHk+CjwvaHRtbD4=
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cheese Wagon - Gourmet Grilled Cheese Food Truck</title>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="branding-bar" style="display: flex; align-items: center;">
+                <div class="logo-container">
+                    <div class="logo-image">
+                        <img src="images/logo.png" alt="The Cheese Wagon Logo">
+                    </div>
+                </div>
+                <button class="nav-toggle" aria-label="Open Menu">
+                    <span class="burger"></span>
+                    <span class="burger"></span>
+                    <span class="burger"></span>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#locations">Locations</a></li>
+                    <li><a href="#reviews">Reviews</a></li>
+                    <li><a href="#social">Social</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+      
+
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <img src="images/truck.png" alt="The Cheese Wagon Logo">
+                </div>
+                <h1>Welcome to The Cheese Wagon</h1>
+                <p>Gourmet Grilled Cheese & Breakfast Sandwiches on Wheels</p>
+                <a href="#menu" class="cta-button">
+                    <i class="fas fa-utensils"></i> View Our Menu
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2>Why Choose The Cheese Wagon?</h2>
+            <div class="features-grid">
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon">
+                        <i class="fas fa-cheese"></i>
+                    </div>
+                    <h3>Gourmet Grilled Cheese</h3>
+                    <p>From classic comfort to creative combinations like our famous Firehouse sandwich with grape jelly, jalapeños, bacon, and Swiss cheese.</p>
+                </div>
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon">
+                        <i class="fas fa-egg"></i>
+                    </div>
+                    <h3>Fresh Breakfast</h3>
+                    <p>Start your day right with our hearty breakfast sandwiches, bagels, and quesadillas made fresh to order every morning.</p>
+                </div>
+                <div class="feature-card hover-lift">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Two Great Locations</h3>
+                    <p>Find us at Electric Coffee Shop in Port Huron and Lexington Coffee Shop - your perfect pairing of great coffee and amazing food!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="menu" class="menu">
+        <div class="container">
+          <h2>Our Delicious Menu</h2>
+          <div class="menu-card-grid" id="menu-card-grid">
+            <!-- Dynamic menu cards go here -->
+          </div>
+          <div style="text-align: center; margin-top: 2rem;">
+            <p style="color: #eee; font-style: italic;">
+              <i class="fas fa-phone"></i> Call us at (717) 742-0664 for special orders or catering!
+            </p>
+          </div>
+        </div>
+      </section>
+      
+
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2>What Our Customers Say</h2>
+            <div class="reviews-grid">
+                <div class="review-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="review-text">
+                        "The food trucks we have in Port Huron are awesome, but the cheese wagon has to be my favorite. I mean, who doesn't love breakfast sandwiches and grilled cheese?! The food always comes out hot and fresh, as it is made to order, and very quickly too."
+                    </div>
+                    <div class="reviewer">Kelli K.</div>
+                    <div class="review-source">Yelp Review</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="review-text">
+                        "This morning I finished an amazing yoga class down the road and stopped by for the Electric Company for a coffee... Lo and behold a beacon of cheese was in the lot. The hypnotic yellow shack on wheels... Heaven- Texas Toast, egg, ample bacon, American cheese... the wagon and I have merged- We were one in the cheese."
+                    </div>
+                    <div class="reviewer">Christina G.</div>
+                    <div class="review-source">Yelp Review</div>
+                </div>
+
+                <div class="review-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="review-text">
+                        "Just had their food for the first time and it was amazing.. best sandwiches I had in a long time"
+                    </div>
+                    <div class="reviewer">Samantha H.</div>
+                    <div class="review-source">Yelp Review</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="locations" class="location">
+        <div class="container">
+            <h2>Find Us Here</h2>
+            <div class="locations-grid">
+                <div class="location-card">
+                    <h3><i class="fas fa-coffee"></i> Electric Coffee Shop</h3>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>2803 Stone St, Port Huron, MI 48060</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-clock"></i>
+                        <span>Thursday - Sunday: 8:00 AM - 1:00 PM</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-phone"></i>
+                        <span>(717) 742-0664</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Perfect pairing with fresh coffee!</span>
+                    </div>
+                </div>
+                <div class="location-card">
+                    <h3><i class="fas fa-coffee"></i> Lexington Coffee Shop</h3>
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>5533 Main St, Lexington, MI 48450</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-clock"></i>
+                        <span>Saturday - Sunday: 8:00 AM - 12:00 PM</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-phone"></i>
+                        <span>(717) 742-0664</span>
+                    </div>
+                    <div class="location-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Behind the coffee shop - weekend specials!</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="map-container" style="margin-top: 2.5em;">
+                <h3>Interactive Maps</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center;">
+                    <div>
+                        <iframe
+                            src="https://www.google.com/maps?q=2803+Stone+St,+Port+Huron,+MI+48060&output=embed"
+                            width="400" height="300"
+                            style="border:0; border-radius: 12px; max-width: 90vw;"
+                            allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div style="text-align: center; font-size:0.94em; margin-top:0.7em;">
+                            2803 Stone St, Port Huron, MI 48060
+                        </div>
+                    </div>
+                    <div>
+                        <iframe
+                            src="https://www.google.com/maps?q=5533+Main+St,+Lexington,+MI+48450&output=embed"
+                            width="400" height="300"
+                            style="border:0; border-radius: 12px; max-width: 90vw;"
+                            allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        <div style="text-align: center; font-size:0.94em; margin-top:0.7em;">
+                            5533 Main St, Lexington, MI 48450
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+<section id="social" class="social-media">
+    <div class="container">
+        <h2>Follow Our Journey</h2>
+        <div class="social-links">
+            <a href="https://www.facebook.com/CheeseWagonTruck" class="social-link" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/cheese_wagon/" class="social-link" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@taryn.strausser" class="social-link" target="_blank">
+                <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="tel:+17177420664" class="social-link">
+                <i class="fas fa-phone"></i>
+            </a>
+        </div>
+
+        <div class="social-grid">
+            <div class="instagram-embed" style="padding:0; background:none; min-height:480px; box-shadow:none; display:block;">
+                <iframe 
+                  src="https://www.instagram.com/cheese_wagon/embed/" 
+                  width="100%" height="480" 
+                  frameborder="0" 
+                  scrolling="no" 
+                  allowtransparency="true" 
+                  style="border:none;overflow:hidden;border-radius:12px;">
+                </iframe>
+                <div style="margin-top:12px; font-size: 0.93em; color: #8B4513;">
+                  <b>
+                    Follow <a href="https://www.instagram.com/cheese_wagon/" target="_blank" rel="noopener" style="color:#FF8C00;">@cheese_wagon</a> on Instagram!
+                  </b>
+                </div>
+            </div>
+
+<!-- Desktop/tablet Facebook iframe -->
+<iframe 
+  class="fb-desktop"
+  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCheeseWagonTruck%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=false&hide_cover=false&show_facepile=false&appId"
+  width="500" height="500"
+  style="border:none;overflow:hidden"
+  scrolling="no"
+  frameborder="0"
+  allowfullscreen="true"
+  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+</iframe>
+
+<!-- Mobile Facebook iframe -->
+<iframe 
+  class="fb-mobile"
+  src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCheeseWagonTruck%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=false&hide_cover=false&show_facepile=false&appId"
+  width="380" height="500"
+  style="border:none;overflow:hidden"
+  scrolling="no"
+  frameborder="0"
+  allowfullscreen="true"
+  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+</iframe>
+    </div>
+</section>
+
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-phone"></i> (717) 742-0664</p>
+                    <p><i class="fas fa-envelope"></i> cheesewagontruck@gmail.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Port Huron & Lexington, MI</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Electric Coffee Shop (Port Huron)</p>
+                    <p>Thursday - Sunday: 8 AM - 1 PM</p>
+                    <p>Lexington Coffee Shop</p>
+                    <p>Saturday - Sunday: 8 AM - 12 PM</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <p><a href="https://www.facebook.com/CheeseWagonTruck">Facebook</a></p>
+                    <p><a href="https://www.instagram.com/cheese_wagon/">Instagram</a></p>
+                    <p><a href="https://www.tiktok.com/@taryn.strausser">TikTok</a></p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 The Cheese Wagon. All rights reserved. | On Tour Since 2020</p>
+                <p>Gourmet Grilled Cheese & Breakfast Sandwiches - Blue Water Area's Favorite Food Truck</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>
