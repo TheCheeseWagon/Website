@@ -70,7 +70,7 @@
 .logo-image img {
     width: 60px;
     height: auto;  /* or your preferred height */
-    border-radius: 10px; /* No forced circle */
+    border-radius: 20px; /* No forced circle */
 }
 
 
