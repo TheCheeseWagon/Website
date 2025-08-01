@@ -69,8 +69,10 @@
 
 .logo-image img {
     width: 60px;
-    height: auto;  /* or your preferred height */
-    border-radius: 20px; /* No forced circle */
+    height: auto;
+    /* or your preferred height */
+    border-radius: 20px;
+    border-radius: 50px;
 }
 
 
