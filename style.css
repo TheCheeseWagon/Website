@@ -890,3 +890,7 @@
     margin: 0 auto;
   }
 }
+.css-selected {
+  border-radius: 50px;
+  
+}
