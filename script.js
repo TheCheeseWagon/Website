@@ -192,7 +192,7 @@ function renderMenuCards(menuData) {
   }
   
   // Fetch from your Worker (change URL if deployed!)
-  fetch('https://worker-d1.thecheesewagon.workers.dev/')
+  fetch('https://worker-d1-public.thecheesewagon.workers.dev/')
     .then(res => res.json())
     .then(renderMenuCards)
     .catch(() => {
@@ -200,7 +200,7 @@ function renderMenuCards(menuData) {
     });
   
   // ========== END DYNAMIC MENU RENDERING ==========
-  fetch('https://worker-d1.thecheesewagon.workers.dev/')
+  fetch('https://worker-d1-public.thecheesewagon.workers.dev/')
   .then(res => res.json())
   .then(menu => {
     renderMenuCards(menu);
