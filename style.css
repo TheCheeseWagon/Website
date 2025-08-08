@@ -68,11 +68,12 @@
 }
 
 .logo-image img {
-    width: 60px;
+    width: 66px;
     height: auto;
     /* or your preferred height */
     border-radius: 20px;
     border-radius: 50px;
+    opacity: 0.9;
 }
 
 
