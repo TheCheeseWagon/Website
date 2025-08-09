@@ -967,7 +967,7 @@
                 <button class="reset-btn" onclick="resetAllStyles()">🔄 Reset Everything</button>
             </div>
             <div class="iframe-container">
-                <iframe id="previewFrame" class="preview-iframe" src="index.html"></iframe>
+                <iframe id="previewFrame" class="preview-iframe"></iframe>
             </div>
         </section>
     </div>
@@ -1354,240 +1354,138 @@
             }
         }
 
-        // ========== REPLACE WITH EXISTING IMAGE LOGIC (FIXED TO FOLLOW ORIGINAL CMS PATTERN) ==========
-        function showReplaceWithExisting(targetImageName, targetImageSha) {
-            currentReplaceTarget = { name: targetImageName, sha: targetImageSha };
+// ========== REPLACE WITH EXISTING IMAGE LOGIC ==========
+function showReplaceWithExisting(targetImageName, targetImageSha) {
+    currentReplaceTarget = { name: targetImageName, sha: targetImageSha };
+    
+    const modal = document.getElementById('imageSelectModal');
+    const grid = document.getElementById('imageSelectGrid');
+    
+    // Clear previous content
+    grid.innerHTML = '';
+    
+    // Populate with all images except the target
+    allImages.forEach(img => {
+        if (img.name !== targetImageName) {
+            const item = document.createElement('div');
+            item.className = 'image-select-item';
+            item.onclick = () => replaceWithSelectedImage(img.name);
             
-            const modal = document.getElementById('imageSelectModal');
-            const grid = document.getElementById('imageSelectGrid');
+            item.innerHTML = `
+                <img src="${img.display_url}" alt="${img.name}">
+                <div class="image-name">${img.name}</div>
+            `;
             
-            // Clear previous content
-            grid.innerHTML = '';
-            
-            // Populate with all images except the target
-            allImages.forEach(img => {
-                if (img.name !== targetImageName) {
-                    const item = document.createElement('div');
-                    item.className = 'image-select-item';
-                    item.onclick = () => replaceWithSelectedImage(img.name);
-                    
-                    item.innerHTML = `
-                        <img src="${img.display_url}" alt="${img.name}">
-                        <div class="image-name">${img.name}</div>
-                    `;
-                    
-                    grid.appendChild(item);
-                }
-            });
-            
-            modal.style.display = 'flex';
+            grid.appendChild(item);
         }
+    });
+    
+    modal.style.display = 'flex';
+}
 
-        function closeImageSelector() {
-            document.getElementById('imageSelectModal').style.display = 'none';
-            currentReplaceTarget = null;
-        }
+function closeImageSelector() {
+    document.getElementById('imageSelectModal').style.display = 'none';
+    currentReplaceTarget = null;
+}
 
-        // CORRECTED: This function now updates HTML/CSS references instead of overwriting image content
-        async function replaceWithSelectedImage(sourceImageName) {
-            if (!currentReplaceTarget) return;
+// Updates HTML/CSS references instead of overwriting image content
+async function replaceWithSelectedImage(sourceImageName) {
+    if (!currentReplaceTarget) return;
+    
+    const targetName = currentReplaceTarget.name;
+    
+    alert(`Updating references from ${targetName} to ${sourceImageName}...`);
+    closeImageSelector();
+    
+    try {
+        // Update code references in HTML/CSS/JS files
+        const files = await fetchRootHtmlCssJsFiles();
+        let updatedFiles = 0;
+        
+        for (let filename of files) {
+            let text = await fetchTextFile(filename);
+            if (!text) continue;
             
-            const targetName = currentReplaceTarget.name;
-            
-            setStatus(`Updating references from ${targetName} to ${sourceImageName}...`);
-            closeImageSelector();
-            
-            try {
-                // Update code references in HTML/CSS/JS files
-                const files = await fetchRootHtmlCssJsFiles();
-                let updatedFiles = 0;
+            let updated = updateCodeReferences(text, targetName, sourceImageName);
+            if (updated !== text) {
+                let fileSha = await fetchFileSha(filename);
+                const resp = await fetch(API_BASE + "/github/edit-file", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-admin-token": adminToken,
+                        "x-username-token": usernameToken
+                    },
+                    body: JSON.stringify({
+                        repo: GITHUB_REPOPATH,
+                        path: filename,
+                        content: updated,
+                        message: `Update image references: ${targetName} → ${sourceImageName}`,
+                        branch: "main",
+                        sha: fileSha
+                    })
+                });
                 
-                for (let filename of files) {
-                    let text = await fetchTextFile(filename);
-                    if (!text) continue;
-                    
-                    let updated = updateCodeReferences(text, targetName, sourceImageName);
-                    if (updated !== text) {
-                        let fileSha = await fetchFileSha(filename);
-                        const resp = await fetch(API_BASE + "/github/edit-file", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "x-admin-token": adminToken,
-                                "x-username-token": usernameToken
-                            },
-                            body: JSON.stringify({
-                                repo: GITHUB_REPOPATH,
-                                path: filename,
-                                content: updated,
-                                message: `Update image references: ${targetName} → ${sourceImageName}`,
-                                branch: "main",
-                                sha: fileSha
-                            })
-                        });
-                        
-                        if (resp.ok) {
-                            updatedFiles++;
-                        }
-                    }
+                if (resp.ok) {
+                    updatedFiles++;
                 }
-                
-                if (updatedFiles > 0) {
-                    setStatus(`Successfully updated ${updatedFiles} file(s) to use ${sourceImageName}!`);
-                } else {
-                    setStatus(`No references to ${targetName} found in code files.`, "error");
-                }
-                
-                await fetchAndCategorizeImages();
-                
-            } catch (error) {
-                console.error('Error updating image references:', error);
-                setStatus(`Error updating image references: ${error.message}`, "error");
             }
         }
-
-        function updateCodeReferences(code, oldImg, newImg) {
-            // Update HTML src attributes
-            code = code.replace(
-                new RegExp(`(<[^>]+src=["'])images/${oldImg}(["'][^>]*>)`, "g"),
-                `$1images/${newImg}$2`
-            );
-            // Update CSS url() references
-            code = code.replace(
-                new RegExp(`url\\(["']images/${oldImg}["']\\)`, "g"),
-                `url('images/${newImg}')`
-            );
-            // Update any other plain text image references
-            code = code.replace(
-                new RegExp(`images/${oldImg}`, "g"),
-                `images/${newImg}`
-            );
-            return code;
+        
+        if (updatedFiles > 0) {
+            alert(`Successfully updated ${updatedFiles} file(s) to use ${sourceImageName}!`);
+        } else {
+            alert(`No references to ${targetName} found in code files.`);
         }
+        
+        await fetchAndCategorizeImages();
+        
+    } catch (error) {
+        console.error('Error updating image references:', error);
+        alert(`Error updating image references: ${error.message}`);
+    }
+}
 
-        async function fetchFileSha(filename) {
-            const url = `https://api.github.com/repos/${GITHUB_REPOPATH}/contents/${filename}`;
-            const resp = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
-            if (!resp.ok) return null;
-            const meta = await resp.json();
-            return meta && meta.sha ? meta.sha : null;
-        }
+function updateCodeReferences(code, oldImg, newImg) {
+    // Update HTML src attributes
+    code = code.replace(
+        new RegExp(`(<[^>]+src=["'])images/${oldImg}(["'][^>]*>)`, "g"),
+        `$1images/${newImg}$2`
+    );
+    // Update CSS url() references
+    code = code.replace(
+        new RegExp(`url\\(["']images/${oldImg}["']\\)`, "g"),
+        `url('images/${newImg}')`
+    );
+    // Update any other plain text image references
+    code = code.replace(
+        new RegExp(`images/${oldImg}`, "g"),
+        `images/${newImg}`
+    );
+    return code;
+}
 
-        async function replaceImage(fname, sha) {
-            const inp = document.getElementById("image-upload");
-            inp.value = "";
-            inp.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                setStatus(`Uploading & relinking ${file.name}...`);
-                const newFileName = getTimestampedFilename(file.name);
-                const fr = new FileReader();
-                fr.onload = async () => {
-                    const b64 = fr.result.split(",")[1];
-                    const uploadResp = await fetch(API_BASE + "/github/create-file", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-admin-token": adminToken,
-                            "x-username-token": usernameToken
-                        },
-                        body: JSON.stringify({
-                            repo: GITHUB_REPOPATH,
-                            path: IMAGES_FOLDER + "/" + newFileName,
-                            content: b64,
-                            message: `Upload new image ${newFileName} (replace ${fname})`,
-                            branch: "main"
-                        }),
-                        cache: "no-store"
-                    });
-                    if (!uploadResp.ok) {
-                        setStatus("Error uploading image", "error");
-                        return;
-                    }
+async function fetchFileSha(filename) {
+    const url = `https://api.github.com/repos/${GITHUB_REPOPATH}/contents/${filename}`;
+    const resp = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+    if (!resp.ok) return null;
+    const meta = await resp.json();
+    return meta && meta.sha ? meta.sha : null;
+}
 
-                    // Update code references to point to new image
-                    const files = await fetchRootHtmlCssJsFiles();
-                    for (let filename of files) {
-                        let text = await fetchTextFile(filename);
-                        if (!text) continue;
-                        let updated = updateCodeReferences(text, fname, newFileName);
-                        if (updated !== text) {
-                            let fileSha = await fetchFileSha(filename);
-                            await fetch(API_BASE + "/github/edit-file", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "x-admin-token": adminToken,
-                                    "x-username-token": usernameToken
-                                },
-                                body: JSON.stringify({
-                                    repo: GITHUB_REPOPATH,
-                                    path: filename,
-                                    content: updated,
-                                    message: `Update ref to ${newFileName} replacing ${fname}`,
-                                    branch: "main",
-                                    sha: fileSha
-                                }),
-                                cache: "no-store"
-                            });
-                        }
-                    }
-                    setStatus("Image replaced & linked!", "success");
-                    await fetchAndCategorizeImages();
-                };
-                fr.readAsDataURL(file);
-            };
-            inp.click();
-        }
-
-        function showImageUploader() {
-            const inp = document.getElementById("image-upload");
-            inp.value = "";
-            inp.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                setStatus(`Uploading ${file.name}...`);
-                const fr = new FileReader();
-                fr.onload = async () => {
-                    const b64 = fr.result.split(",")[1];
-                    const resp = await fetch(API_BASE + "/github/create-file", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-admin-token": adminToken,
-                            "x-username-token": usernameToken
-                        },
-                        body: JSON.stringify({
-                            repo: GITHUB_REPOPATH,
-                            path: IMAGES_FOLDER + "/" + file.name,
-                            content: b64,
-                            message: `Add image ${file.name}`,
-                            branch: "main"
-                        }),
-                        cache: "no-store"
-                    });
-                    if (resp.ok) {
-                        setStatus("Image uploaded!");
-                        await fetchAndCategorizeImages();
-                    } else {
-                        try {
-                            const err = await resp.json();
-                            setStatus(err.message || "Error uploading", "error");
-                        } catch {
-                            setStatus("Error uploading", "error");
-                        }
-                    }
-                };
-                fr.readAsDataURL(file);
-            };
-            inp.click();
-        }
-
-        async function deleteImage(fname, sha) {
-            if (!confirm(`Delete ${fname}?`)) return;
-            setStatus(`Deleting ${fname}...`);
-            const resp = await fetch(API_BASE + "/github/delete-file", {
-                method: "DELETE",
+async function replaceImage(fname, sha) {
+    const inp = document.getElementById("image-upload");
+    inp.value = "";
+    inp.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setStatus(`Uploading & relinking ${file.name}...`);
+        const newFileName = getTimestampedFilename(file.name);
+        const fr = new FileReader();
+        fr.onload = async () => {
+            const b64 = fr.result.split(",")[1];
+            const uploadResp = await fetch(API_BASE + "/github/create-file", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "x-admin-token": adminToken,
@@ -1595,19 +1493,122 @@
                 },
                 body: JSON.stringify({
                     repo: GITHUB_REPOPATH,
-                    path: IMAGES_FOLDER + "/" + fname,
-                    message: `Delete image ${fname}`,
-                    branch: "main",
-                    sha: sha
-                })
+                    path: IMAGES_FOLDER + "/" + newFileName,
+                    content: b64,
+                    message: `Upload new image ${newFileName} (replace ${fname})`,
+                    branch: "main"
+                }),
+                cache: "no-store"
+            });
+            if (!uploadResp.ok) {
+                setStatus("Error uploading image", "error");
+                return;
+            }
+
+            // Update code references to point to new image
+            const files = await fetchRootHtmlCssJsFiles();
+            for (let filename of files) {
+                let text = await fetchTextFile(filename);
+                if (!text) continue;
+                let updated = updateCodeReferences(text, fname, newFileName);
+                if (updated !== text) {
+                    let fileSha = await fetchFileSha(filename);
+                    await fetch(API_BASE + "/github/edit-file", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "x-admin-token": adminToken,
+                            "x-username-token": usernameToken
+                        },
+                        body: JSON.stringify({
+                            repo: GITHUB_REPOPATH,
+                            path: filename,
+                            content: updated,
+                            message: `Update ref to ${newFileName} replacing ${fname}`,
+                            branch: "main",
+                            sha: fileSha
+                        }),
+                        cache: "no-store"
+                    });
+                }
+            }
+            setStatus("Image replaced & linked!", "success");
+            await fetchAndCategorizeImages();
+        };
+        fr.readAsDataURL(file);
+    };
+    inp.click();
+}
+
+function showImageUploader() {
+    const inp = document.getElementById("image-upload");
+    inp.value = "";
+    inp.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setStatus(`Uploading ${file.name}...`);
+        const fr = new FileReader();
+        fr.onload = async () => {
+            const b64 = fr.result.split(",")[1];
+            const resp = await fetch(API_BASE + "/github/create-file", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-admin-token": adminToken,
+                    "x-username-token": usernameToken
+                },
+                body: JSON.stringify({
+                    repo: GITHUB_REPOPATH,
+                    path: IMAGES_FOLDER + "/" + file.name,
+                    content: b64,
+                    message: `Add image ${file.name}`,
+                    branch: "main"
+                }),
+                cache: "no-store"
             });
             if (resp.ok) {
-                setStatus("Image deleted!");
+                setStatus("Image uploaded!");
                 await fetchAndCategorizeImages();
             } else {
-                setStatus("Error deleting image", "error");
+                try {
+                    const err = await resp.json();
+                    setStatus(err.message || "Error uploading", "error");
+                } catch {
+                    setStatus("Error uploading", "error");
+                }
             }
-        }
+        };
+        fr.readAsDataURL(file);
+    };
+    inp.click();
+}
+
+async function deleteImage(fname, sha) {
+    if (!confirm(`Delete ${fname}?`)) return;
+    setStatus(`Deleting ${fname}...`);
+    const resp = await fetch(API_BASE + "/github/delete-file", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "x-admin-token": adminToken,
+            "x-username-token": usernameToken
+        },
+        body: JSON.stringify({
+            repo: GITHUB_REPOPATH,
+            path: IMAGES_FOLDER + "/" + fname,
+            message: `Delete image ${fname}`,
+            branch: "main",
+            sha: sha
+        })
+    });
+    if (resp.ok) {
+        setStatus("Image deleted!");
+        await fetchAndCategorizeImages();
+    } else {
+        setStatus("Error deleting image", "error");
+    }
+}
+
 
         // ========== MENU MANAGEMENT ==========
         async function fetchMenu() {
@@ -1767,7 +1768,7 @@
             }
         }
 
-        // ========== CSS EDITOR LOGIC ==========
+        // ========== CSS EDITOR LOGIC (UPDATED FOR PROXY) ==========
         const SIMPLE_CONTROLS = {
             'Basic Adjustments': {
                 'Size': { property: 'width', min: 50, max: 800, unit: 'px', default: 300 },
@@ -1784,6 +1785,10 @@
 
         function initializeEditor() {
             const frame = document.getElementById('previewFrame');
+            
+            // UPDATED: Load HTML via proxy to avoid CORS
+            loadPreviewFromProxy();
+            
             frame.addEventListener('load', setupClickableElements);
             
             setTimeout(() => {
@@ -1792,6 +1797,99 @@
                 }
             }, 2000);
         }
+
+ // NEW: Enhanced loadPreviewFromProxy function with image support
+async function loadPreviewFromProxy() {
+    try {
+        // Fetch HTML content through proxy
+        const htmlResponse = await fetch(`${API_BASE}/proxy/index.html`, {
+            headers: {
+                "x-admin-token": adminToken,
+                "x-username-token": usernameToken
+            }
+        });
+        
+        if (!htmlResponse.ok) {
+            throw new Error('Failed to load HTML via proxy');
+        }
+        
+        let htmlContent = await htmlResponse.text();
+        
+        // Update HTML to use proxy endpoints for CSS and JS
+        htmlContent = htmlContent.replace(
+            /href="\.\/style\.css"/g,
+            `href="${API_BASE}/proxy/style.css"`
+        );
+        htmlContent = htmlContent.replace(
+            /src="\.\/script\.js"/g,
+            `src="${API_BASE}/proxy/script.js"`
+        );
+        
+        // Fix image paths in HTML to use GitHub raw URLs directly
+        const GITHUB_RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main`;
+        htmlContent = htmlContent.replace(/src="images\//g, `src="${GITHUB_RAW_BASE}/images/`);
+        htmlContent = htmlContent.replace(/src="\.\/images\//g, `src="${GITHUB_RAW_BASE}/images/`);
+        
+        // Also fetch and update CSS to fix background images
+        const cssResponse = await fetch(`${API_BASE}/proxy/style.css`, {
+            headers: {
+                "x-admin-token": adminToken,
+                "x-username-token": usernameToken
+            }
+        });
+        
+        if (cssResponse.ok) {
+            let cssContent = await cssResponse.text();
+            
+            // Fix CSS background image paths to use GitHub raw URLs
+            cssContent = cssContent.replace(
+                /url\(['"]?images\//g,
+                `url('${GITHUB_RAW_BASE}/images/`
+            );
+            cssContent = cssContent.replace(
+                /url\(['"]?\.\/images\//g,
+                `url('${GITHUB_RAW_BASE}/images/`
+            );
+            
+            // Handle various CSS url() formats
+            cssContent = cssContent.replace(
+                /url\(['"]?\.\.\/images\//g,
+                `url('${GITHUB_RAW_BASE}/images/`
+            );
+            cssContent = cssContent.replace(
+                /url\(images\//g,
+                `url(${GITHUB_RAW_BASE}/images/`
+            );
+            
+            // Create inline style block with updated CSS
+            const styleBlock = `<style>${cssContent}</style>`;
+            
+            // Remove original CSS link and add inline styles
+            htmlContent = htmlContent.replace(
+                /<link[^>]*href="[^"]*style\.css"[^>]*>/g,
+                styleBlock
+            );
+        }
+        
+        // Create blob URL for the modified HTML
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        const frame = document.getElementById('previewFrame');
+        frame.src = blobUrl;
+        
+        // Clean up previous blob URL to prevent memory leaks
+        if (frame.dataset.previousBlobUrl) {
+            URL.revokeObjectURL(frame.dataset.previousBlobUrl);
+        }
+        frame.dataset.previousBlobUrl = blobUrl;
+        
+    } catch (error) {
+        console.error('Error loading preview via proxy:', error);
+        showError('Could not load website preview. Make sure your worker has proxy endpoints.');
+    }
+}
+
 
         function setupClickableElements() {
             const frame = document.getElementById('previewFrame');
@@ -1825,7 +1923,7 @@
                 
             } catch (error) {
                 console.error('Error initializing editor:', error);
-                showError('Could not connect to your website. Make sure index.html is in the same folder.');
+                showError('Could not connect to your website. Make sure your worker has proxy endpoints.');
             }
         }
 
@@ -1920,408 +2018,708 @@
         }
 
         function updateSidebar(element) {
-            const elementType = getElementType(element);
-            const elementName = getElementName(element);
-            const cssSelector = determineCssSelector(element);
-            
-            const controlsArea = document.getElementById('controlsArea');
-            
-            let html = `
-                <div class="element-info">
-                    <div class="element-preview">
-                        <div class="element-icon">${getElementIcon(element)}</div>
-                        <div class="element-details">
-                            <h3>${elementName}</h3>
-                            <p>${elementType} element</p>
-                            <div class="css-selector-info">CSS Selector: ${cssSelector}</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="controls-container">
-            `;
-            
-            // Add text editing button for text elements
-            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a'].includes(element.tagName.toLowerCase())) {
-                html += `<button class="edit-text-btn" onclick="openTextEditor()">✏️ Edit Text Content</button>`;
-            }
+    // === DYNAMIC SIZE SLIDER BLOCK ===
+    const textTags = ['p', 'span', 'a', 'label', 'li', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+    const isTextTag = textTags.includes(element.tagName.toLowerCase());
+    const isImg = element.tagName.toLowerCase() === 'img';
 
-            // Add image actions for images
-            if (element.tagName.toLowerCase() === 'img') {
-                html += `
-                    <div class="image-actions">
-                        <button class="upload-btn" onclick="uploadImageForElement()">📁 Upload New</button>
-                        <button class="replace-btn" onclick="replaceImageForElementViaFile()">🔄 Replace</button>
-                        <button class="replace-existing-btn" onclick="replaceImageForElementWithExisting()">🔀 Replace w/ Existing</button>
-                    </div>
-                `;
-            }
-            
-            Object.entries(SIMPLE_CONTROLS).forEach(([groupName, controls]) => {
-                html += `
-                    <div class="control-group">
-                        <h4>${groupName}</h4>
-                `;
-                
-                Object.entries(controls).forEach(([controlName, config]) => {
-                    const currentValue = getCurrentValue(element, config);
-                    const controlId = `control-${config.property}`;
-                    
-                    html += `
-                        <div class="control-item">
-                            <div class="control-label">
-                                <span>${controlName}</span>
-                                <span class="control-value" id="value-${controlId}">${formatValue(currentValue, config.unit)}</span>
-                            </div>
-                            <input 
-                                type="range" 
-                                class="control-slider"
-                                id="${controlId}"
-                                min="${config.min}"
-                                max="${config.max}"
-                                value="${currentValue}"
-                                data-property="${config.property}"
-                                data-unit="${config.unit}"
-                                oninput="handleSliderChange(this)"
-                            >
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-            });
+    // Adjust "Size" control depending on element type
+    if (isTextTag || elementHasUserText(element)) {
+        // Treat any element that has visible text like a text element
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].property = 'font-size';
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].min = 10;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].max = 120;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].default =
+            parseInt(frameWindow.getComputedStyle(element).fontSize) || 16;
+    } else if (isImg) {
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].property = 'width';
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].min = 30;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].max = 800;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].default =
+            parseInt(frameWindow.getComputedStyle(element).width) || 300;
+    } else {
+        // Non-text, non-image elements fall back to width control
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].property = 'width';
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].min = 50;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].max = 800;
+        SIMPLE_CONTROLS['Basic Adjustments']['Size'].default =
+            parseInt(frameWindow.getComputedStyle(element).width) || 300;
+    }
+    // === END DYNAMIC SIZE SLIDER BLOCK ===
+
+    const elementType = getElementType(element);
+    const elementName = getElementName(element);
+    const cssSelector = determineCssSelector(element);
+
+    const controlsArea = document.getElementById('controlsArea');
+
+    let html = `
+        <div class="element-info">
+            <div class="element-preview">
+                <div class="element-icon">${getElementIcon(element)}</div>
+                <div class="element-details">
+                    <h3>${elementName}</h3>
+                    <p>${elementType} element</p>
+                    <div class="css-selector-info">CSS Selector: ${cssSelector}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls-container">
+    `;
+
+    // Add text editing button for ANY element with user-visible text
+    if (elementHasUserText(element)) {
+        html += `<button class="edit-text-btn" onclick="openTextEditor()">✏️ Edit Text Content</button>`;
+    }
+
+    // Add image actions for images
+    if (element.tagName.toLowerCase() === 'img') {
+        html += `
+            <div class="image-actions">
+                <button class="upload-btn" onclick="uploadImageForElement()">📁 Upload New</button>
+                <button class="replace-btn" onclick="replaceImageForElementViaFile()">🔄 Replace</button>
+                <button class="replace-existing-btn" onclick="replaceImageForElementWithExisting()">🔀 Replace w/ Existing</button>
+            </div>
+        `;
+    }
+    
+    Object.entries(SIMPLE_CONTROLS).forEach(([groupName, controls]) => {
+        html += `
+            <div class="control-group">
+                <h4>${groupName}</h4>
+        `;
+        Object.entries(controls).forEach(([controlName, config]) => {
+            const currentValue = getCurrentValue(element, config);
+            const controlId = `control-${config.property}`;
             
             html += `
-                    <button class="save-changes-btn" onclick="saveStyleChanges()">💾 Save Changes</button>
+                <div class="control-item">
+                    <div class="control-label">
+                        <span>${controlName}</span>
+                        <span class="control-value" id="value-${controlId}">${formatValue(currentValue, config.unit)}</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        class="control-slider"
+                        id="${controlId}"
+                        min="${config.min}"
+                        max="${config.max}"
+                        value="${currentValue}"
+                        data-property="${config.property}"
+                        data-unit="${config.unit}"
+                        oninput="handleSliderChange(this)"
+                    >
                 </div>
             `;
-            
-            controlsArea.innerHTML = html;
-        }
+        });
+        html += '</div>';
+    });
 
-        function getElementType(element) {
-            const tagName = element.tagName.toLowerCase();
-            
-            if (tagName === 'img') return 'Image';
-            if (tagName === 'button' || tagName === 'input') return 'Button';
-            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a'].includes(tagName)) return 'Text';
-            if (['div', 'section', 'article', 'header', 'footer'].includes(tagName)) return 'Section';
-            
-            return 'Element';
-        }
+    html += `
+    <button class="save-changes-btn" onclick="saveStyleChanges()">➕ Add to Staged</button>
+        </div>
+    `;
 
-        function getElementName(element) {
-            if (element.alt) return element.alt;
-            if (element.title) return element.title;
-            if (element.textContent && element.textContent.trim()) {
-                return element.textContent.trim().substring(0, 30) + (element.textContent.trim().length > 30 ? '...' : '');
+    controlsArea.innerHTML = html;
+}
+
+// Consider any element with visible text as 'Text'
+function getElementType(element) {
+    const tagName = element.tagName.toLowerCase();
+    if (tagName === 'img') return 'Image';
+    if (tagName === 'button' || tagName === 'input') return 'Button';
+    if (elementHasUserText(element)) return 'Text';
+    if (['div', 'section', 'article', 'header', 'footer'].includes(tagName)) return 'Section';
+    return 'Element';
+}
+
+function getElementName(element) {
+    if (element.alt) return element.alt;
+    if (element.title) return element.title;
+    if (element.textContent && element.textContent.trim()) {
+        return element.textContent.trim().substring(0, 30) + (element.textContent.trim().length > 30 ? '...' : '');
+    }
+    if (element.className) return `${element.tagName.toLowerCase()}.${element.className.split(' ')[0]}`;
+    if (element.id) return `${element.tagName.toLowerCase()}#${element.id}`;
+    return element.tagName.toLowerCase();
+}
+
+function getElementIcon(element) {
+    const tagName = element.tagName.toLowerCase();
+    if (tagName === 'img') return '🖼️';
+    if (tagName === 'button' || tagName === 'input') return '🔘';
+    if (elementHasUserText(element)) return '📝';
+    if (['div', 'section', 'article'].includes(tagName)) return '📦';
+    if (tagName === 'header') return '🏠';
+    if (tagName === 'footer') return '🔚';
+    return '⭐';
+}
+
+function getCurrentValue(element, config) {
+    if (!frameWindow) return config.default;
+    try {
+        const computedStyle = frameWindow.getComputedStyle(element);
+        switch (config.property) {
+            case 'width': {
+                const width = parseFloat(computedStyle.width) || config.default;
+                return Math.min(Math.max(width, config.min), config.max);
             }
-            if (element.className) return `${element.tagName.toLowerCase()}.${element.className.split(' ')[0]}`;
-            if (element.id) return `${element.tagName.toLowerCase()}#${element.id}`;
-            
-            return element.tagName.toLowerCase();
-        }
-
-        function getElementIcon(element) {
-            const tagName = element.tagName.toLowerCase();
-            
-            if (tagName === 'img') return '🖼️';
-            if (tagName === 'button' || tagName === 'input') return '🔘';
-            if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName)) return '📰';
-            if (['p', 'span', 'a'].includes(tagName)) return '📝';
-            if (['div', 'section', 'article'].includes(tagName)) return '📦';
-            if (tagName === 'header') return '🏠';
-            if (tagName === 'footer') return '🔚';
-            
-            return '⭐';
-        }
-
-        function getCurrentValue(element, config) {
-            if (!frameWindow) return config.default;
-            
-            try {
-                const computedStyle = frameWindow.getComputedStyle(element);
-                
-                switch (config.property) {
-                    case 'width':
-                        const width = parseFloat(computedStyle.width) || config.default;
-                        return Math.min(Math.max(width, config.min), config.max);
-                        
-                    case 'height':
-                        const height = computedStyle.height;
-                        if (height === 'auto') return config.default;
-                        const heightValue = parseFloat(height) || config.default;
-                        return Math.min(Math.max(heightValue, config.min), config.max);
-                        
-                    case 'border-radius':
-                        const borderRadius = parseFloat(computedStyle.borderRadius) || config.default;
-                        return Math.min(Math.max(borderRadius, config.min), config.max);
-                        
-                    case 'box-shadow':
-                        const boxShadow = computedStyle.boxShadow;
-                        if (!boxShadow || boxShadow === 'none') return 0;
-                        const match = boxShadow.match(/(\d+)px/g);
-                        if (match && match.length >= 3) {
-                            return Math.min(Math.max(parseInt(match[2]), config.min), config.max);
-                        }
-                        return 0;
-                        
-                    case 'opacity':
-                        const opacity = parseFloat(computedStyle.opacity) || 1;
-                        return Math.round(opacity * 100);
-                        
-                    case 'margin':
-                        const margin = parseFloat(computedStyle.margin) || config.default;
-                        return Math.min(Math.max(margin, config.min), config.max);
-                        
-                    case 'padding':
-                        const padding = parseFloat(computedStyle.padding) || config.default;
-                        return Math.min(Math.max(padding, config.min), config.max);
-                        
-                    default:
-                        return config.default;
+            case 'height': {
+                const height = computedStyle.height;
+                if (height === 'auto') return config.default;
+                const heightValue = parseFloat(height) || config.default;
+                return Math.min(Math.max(heightValue, config.min), config.max);
+            }
+            case 'border-radius': {
+                const borderRadius = parseFloat(computedStyle.borderRadius) || config.default;
+                return Math.min(Math.max(borderRadius, config.min), config.max);
+            }
+            case 'box-shadow': {
+                const boxShadow = computedStyle.boxShadow;
+                if (!boxShadow || boxShadow === 'none') return 0;
+                const match = boxShadow.match(/(\d+)px/g);
+                if (match && match.length >= 3) {
+                    return Math.min(Math.max(parseInt(match[2]), config.min), config.max);
                 }
-            } catch (error) {
-                console.error('Error getting current value:', error);
+                return 0;
+            }
+            case 'opacity': {
+                const opacity = parseFloat(computedStyle.opacity) || 1;
+                return Math.round(opacity * 100);
+            }
+            case 'margin': {
+                const margin = parseFloat(computedStyle.margin) || config.default;
+                return Math.min(Math.max(margin, config.min), config.max);
+            }
+            case 'padding': {
+                const padding = parseFloat(computedStyle.padding) || config.default;
+                return Math.min(Math.max(padding, config.min), config.max);
+            }
+            default:
                 return config.default;
-            }
         }
+    } catch (error) {
+        console.error('Error getting current value:', error);
+        return config.default;
+    }
+}
 
-        function formatValue(value, unit) {
-            if (unit === '%') {
-                return Math.round(value) + '%';
-            }
-            return Math.round(value) + unit;
+function formatValue(value, unit) {
+    if (unit === '%') return Math.round(value) + '%';
+    return Math.round(value) + unit;
+}
+
+// === Helpers to detect user-visible text ===
+function elementHasUserText(el) {
+    if (!el) return false;
+    const text = getVisibleText(el);
+    return text.length > 0;
+}
+
+function getVisibleText(el) {
+    const doc = el.ownerDocument || document;
+    const walker = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+            if (!node || !node.parentElement) return NodeFilter.FILTER_REJECT;
+            const p = node.parentElement;
+            const tag = p.tagName ? p.tagName.toLowerCase() : '';
+            if (tag === 'script' || tag === 'style') return NodeFilter.FILTER_REJECT;
+            const t = (node.textContent || '').replace(/\s+/g, ' ').trim();
+            return t ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
         }
+    });
+    let s = '';
+    let n;
+    while ((n = walker.nextNode())) {
+        s += (n.textContent || '').replace(/\s+/g, ' ').trim() + ' ';
+    }
+    return s.trim();
+}
 
-        function handleSliderChange(slider) {
-            if (!selectedElement) return;
-            
-            const property = slider.dataset.property;
-            const unit = slider.dataset.unit;
-            const value = parseFloat(slider.value);
-            
-            const valueDisplay = document.getElementById(`value-control-${property}`);
-            if (valueDisplay) {
-                valueDisplay.textContent = formatValue(value, unit);
-            }
-            
-            applyStyle(selectedElement, property, value, unit);
-            
-            // Store pending changes
-            if (!pendingChanges[selectedElement.tagName]) {
-                pendingChanges[selectedElement.tagName] = {};
-            }
-            pendingChanges[selectedElement.tagName][property] = { value, unit };
+
+// ====== UPDATED: slider handler calls applyStyleAndStage ======
+function handleSliderChange(slider) {
+    if (!selectedElement) return;
+
+    const property = slider.dataset.property;
+    const unit = slider.dataset.unit || '';
+    const value = parseFloat(slider.value);
+
+    // Update on-screen value display (keeps your existing formatValue util)
+    const valueDisplay = document.getElementById(`value-control-${property}`);
+    if (valueDisplay) {
+        valueDisplay.textContent = formatValue(value, unit);
+    } else {
+        // fallback: try a couple other common id patterns
+        const alt = document.getElementById(`value-control-${slider.id}`) || document.getElementById(`value-${'control-' + property}`);
+        if (alt) alt.textContent = formatValue(value, unit);
+    }
+
+    // Apply the style live and stage it for a later bulk commit
+    if (typeof applyStyleAndStage === 'function') {
+        applyStyleAndStage(selectedElement, property, value, unit);
+    } else {
+        // Fallback to original immediate apply
+        applyStyle(selectedElement, property, value, unit);
+    }
+
+    // Keep pendingChanges map for backward compatibility
+    try {
+        if (!window.pendingChanges) window.pendingChanges = {};
+        if (!pendingChanges[selectedElement.tagName]) pendingChanges[selectedElement.tagName] = {};
+        pendingChanges[selectedElement.tagName][property] = { value, unit };
+    } catch (e) {
+        // ignore silently if pendingChanges isn't available
+    }
+}
+
+
+// ====== NEW: applyStyleAndStage helper (applies live + stages for batch commit) ======
+function applyStyleAndStage(element, property, value, unit) {
+    // Apply visual change using your existing applyStyle function (keeps behavior consistent)
+    try {
+        applyStyle(element, property, value, unit);
+    } catch (e) {
+        console.warn('applyStyle call failed inside applyStyleAndStage:', e);
+    }
+
+    // Ensure staging containers exist
+    if (!window.pendingStyleEdits) window.pendingStyleEdits = {};
+    if (!window.pendingChanges) window.pendingChanges = {};
+
+    // Determine selector to stage under (use same algorithm as the editor)
+    let selector;
+    try {
+        selector = determineCssSelector(element) || element.tagName.toLowerCase();
+    } catch (e) {
+        selector = element.tagName.toLowerCase();
+    }
+
+    // Normalize value string for CSS (opacity vs px/other)
+    let valueStr;
+    if (property === 'opacity') {
+        valueStr = (value / 100).toString();
+    } else if (unit && unit !== 'px') {
+        valueStr = value + unit;
+    } else {
+        valueStr = value + 'px';
+    }
+
+    // Stage the style change into pendingStyleEdits
+    window.pendingStyleEdits[selector] = window.pendingStyleEdits[selector] || {};
+    window.pendingStyleEdits[selector][property] = valueStr;
+
+    // Also update pendingChanges map for compatibility (keyed by tag)
+    try {
+        if (!pendingChanges[element.tagName]) pendingChanges[element.tagName] = {};
+        pendingChanges[element.tagName][property] = { value, unit };
+    } catch (e) {
+        // ignore
+    }
+
+    // Update staged-badge UI if present
+    try {
+        const badge = document.getElementById('commitBadge');
+        if (badge) {
+            const total = (window.pendingTextEdits ? window.pendingTextEdits.length : 0) + Object.keys(window.pendingStyleEdits || {}).length;
+            badge.textContent = `(${total} staged)`;
         }
+    } catch (e) { /* ignore UI errors */ }
+}
 
-        function applyStyle(element, property, value, unit) {
-            try {
-                switch (property) {
-                    case 'width':
-                        element.style.width = value + 'px';
-                        break;
-                        
-                    case 'height':
-                        element.style.height = value + 'px';
-                        break;
-                        
-                    case 'border-radius':
-                        element.style.borderRadius = value + 'px';
-                        break;
-                        
-                    case 'box-shadow':
-                        if (value > 0) {
-                            element.style.boxShadow = `0 2px ${value}px rgba(0, 0, 0, 0.2)`;
-                        } else {
-                            element.style.boxShadow = 'none';
-                        }
-                        break;
-                        
-                    case 'opacity':
-                        element.style.opacity = value / 100;
-                        break;
-                        
-                    case 'margin':
-                        element.style.margin = value + 'px';
-                        break;
-                        
-                    case 'padding':
-                        element.style.padding = value + 'px';
-                        break;
-                }
-            } catch (error) {
-                console.error('Error applying style:', error);
+
+async function saveStyleChanges() {
+    // New behavior: stage the selectedElement's inline styles for Save All
+    if (!selectedElement || !currentEditingElement) {
+        alert('No element selected to stage style changes for.');
+        return;
+    }
+
+    // Grab inline styles (from live preview)
+    const appliedStyles = selectedElement.style.cssText || '';
+    if (!appliedStyles.trim()) {
+        alert('No inline style changes to stage.');
+        return;
+    }
+
+    try {
+        // Parse applied styles into a prop -> value map
+        const styleRules = {};
+        appliedStyles.split(';').forEach(rule => {
+            const [prop, val] = rule.split(':').map(s => s && s.trim());
+            if (prop && val) {
+                styleRules[prop] = val;
             }
-        }
+        });
 
-        async function saveStyleChanges() {
-            if (!selectedElement || !currentEditingElement) {
-                alert('No element selected to save changes for.');
-                return;
-            }
+        // Determine a selector to stage the rule under
+        const cssSelector = (typeof determineCssSelector === 'function') ? determineCssSelector(selectedElement) : selectedElement.tagName.toLowerCase();
 
-            const appliedStyles = selectedElement.style.cssText;
-            if (!appliedStyles) {
-                alert('No changes to save.');
-                return;
-            }
+        // Ensure staging container exists
+        if (!window.pendingStyleEdits) window.pendingStyleEdits = {};
 
-            try {
-                // Load current CSS content if not already loaded
-                if (!cssContent) {
-                    cssContent = await fetchTextFile('style.css');
-                }
+        // Merge staged rules (existing staged properties are preserved and merged)
+        window.pendingStyleEdits[cssSelector] = window.pendingStyleEdits[cssSelector] || {};
+        Object.assign(window.pendingStyleEdits[cssSelector], styleRules);
 
-                const cssSelector = determineCssSelector(selectedElement);
-                let updatedCSS = cssContent;
-
-                // Parse applied styles
-                const styleRules = {};
-                appliedStyles.split(';').forEach(rule => {
-                    const [prop, val] = rule.split(':').map(s => s.trim());
-                    if (prop && val) {
-                        styleRules[prop] = val;
-                    }
-                });
-
-                // Find existing CSS rule or create new one
-                const selectorPattern = new RegExp(`(${cssSelector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{[^}]*\\})`, 'g');
-                const match = selectorPattern.exec(updatedCSS);
-
-                if (match) {
-                    // Update existing rule
-                    let existingRule = match[1];
-                    let ruleContent = existingRule.substring(existingRule.indexOf('{') + 1, existingRule.lastIndexOf('}'));
-                    
-                    // Parse existing properties
-                    const existingProps = {};
-                    ruleContent.split(';').forEach(line => {
-                        const [prop, val] = line.split(':').map(s => s.trim());
-                        if (prop && val) {
-                            existingProps[prop] = val;
-                        }
-                    });
-
-                    // Merge with new properties
-                    Object.assign(existingProps, styleRules);
-
-                    // Rebuild rule
-                    const newRuleContent = Object.entries(existingProps)
-                        .map(([prop, val]) => `    ${prop}: ${val};`)
-                        .join('\n');
-                    
-                    const newRule = `${cssSelector} {\n${newRuleContent}\n}`;
-                    updatedCSS = updatedCSS.replace(existingRule, newRule);
+        // Maintain pendingChanges map for compatibility with other code
+        try {
+            if (!window.pendingChanges) window.pendingChanges = {};
+            if (!window.pendingChanges[selectedElement.tagName]) window.pendingChanges[selectedElement.tagName] = {};
+            Object.entries(styleRules).forEach(([prop, val]) => {
+                // store numeric value and unit where possible for UI compatibility
+                let numeric = parseFloat(val);
+                let unit = (val.match(/[a-z%]+$/) || ['px'])[0];
+                if (prop === 'opacity') {
+                    // convert to 0-100 range expected by sliders
+                    pendingChanges[selectedElement.tagName][prop] = { value: Math.round((parseFloat(val) || 0) * 100), unit: '%' };
                 } else {
-                    // Create new rule
-                    const newRuleContent = Object.entries(styleRules)
-                        .map(([prop, val]) => `    ${prop}: ${val};`)
-                        .join('\n');
-                    
-                    const newRule = `\n${cssSelector} {\n${newRuleContent}\n}`;
-                    updatedCSS += newRule;
+                    pendingChanges[selectedElement.tagName][prop] = { value: isNaN(numeric) ? val : numeric, unit };
                 }
+            });
+        } catch (e) {
+            // ignore if pendingChanges mapping fails
+        }
 
-                // Save updated CSS
-                const fileSha = await fetchFileSha('style.css');
-                const resp = await fetch(API_BASE + "/github/edit-file", {
+        // UI feedback: update badge + notify user
+        updateCommitBadge();
+        setStatus('Styles staged (will publish on Save All)', 'success');
+        alert('➕ Styles added to staged edits. Press Save All to publish.');
+
+    } catch (error) {
+        console.error('Error staging styles:', error);
+        alert('❌ Error staging styles: ' + (error && error.message ? error.message : error));
+    }
+}
+
+
+// ========== TEXT EDITING (STAGED BATCH + SAVE ALL) ==========
+/*
+Behavior:
+- openTextEditor / closeTextEditor open the modal as before.
+- saveTextEdit() now STAGES text edits (does not call GitHub).
+- A "💾 Save All" button is injected next to the Reset button in the editor header.
+- commitPendingChanges() applies all staged edits to index.html and commits once.
+*/
+
+window.pendingTextEdits = window.pendingTextEdits || [];    // array of { originalInnerHTML, originalTextContent, newText, tagName, className }
+window.pendingStyleEdits = window.pendingStyleEdits || {};  // object: { selector: { prop: value, ... } }
+
+// Inject Save All button (run once)
+function ensureCommitButton() {
+    const header = document.querySelector('.editor-preview-header');
+    if (!header) return;
+    if (document.getElementById('commitChangesBtn')) return;
+
+    const btn = document.createElement('button');
+    btn.id = 'commitChangesBtn';
+    btn.className = 'back-btn';
+    btn.style.marginLeft = '8px';
+    btn.textContent = '💾 Save All';
+    btn.title = 'Commit all staged edits to the site';
+    btn.onclick = commitPendingChanges;
+
+    const resetBtn = header.querySelector('.reset-btn');
+    if (resetBtn && resetBtn.parentNode) {
+        resetBtn.parentNode.insertBefore(btn, resetBtn.nextSibling);
+    } else {
+        header.appendChild(btn);
+    }
+
+    const badge = document.createElement('span');
+    badge.id = 'commitBadge';
+    badge.style.marginLeft = '8px';
+    badge.style.fontSize = '0.9rem';
+    badge.style.color = '#333';
+    badge.textContent = '(0 staged)';
+    btn.parentNode.insertBefore(badge, btn.nextSibling);
+}
+setTimeout(ensureCommitButton, 500);
+
+// Helpers used in this section
+function normalizeText(s) { return (s || '').replace(/\s+/g, ' ').trim(); }
+function stripTags(html) { return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ========== TEXT EDITOR UI ==========
+function openTextEditor() {
+    if (!selectedElement) return;
+    const modal = document.getElementById('textEditorModal');
+    const textarea = document.getElementById('textEditorTextarea');
+    textarea.value = selectedElement.textContent || selectedElement.innerText || '';
+    modal.style.display = 'flex';
+}
+
+function closeTextEditor() {
+    document.getElementById('textEditorModal').style.display = 'none';
+}
+
+// When the user saves text in the modal, stage the edit instead of committing immediately.
+async function saveTextEdit() {
+    const newText = document.getElementById('textEditorTextarea').value;
+    if (!selectedElement) return;
+
+    const originalInnerHTML = selectedElement.innerHTML;
+    const originalTextContent = (selectedElement.textContent || selectedElement.innerText || '').trim();
+    const tagName = selectedElement.tagName ? selectedElement.tagName.toLowerCase() : '';
+    const className = (selectedElement.className || '').split(' ')[0] || '';
+
+    // Live preview update immediately
+    selectedElement.textContent = newText;
+
+    // Stage the edit
+    window.pendingTextEdits.push({
+        originalInnerHTML,
+        originalTextContent,
+        newText,
+        tagName,
+        className
+    });
+
+    updateCommitBadge();
+    closeTextEditor();
+    setStatus('Text staged (not published yet)', 'success');
+}
+
+// Update badge showing number of staged edits
+function updateCommitBadge() {
+    const badge = document.getElementById('commitBadge');
+    if (!badge) return;
+    const total = (window.pendingTextEdits ? window.pendingTextEdits.length : 0) + Object.keys(window.pendingStyleEdits || {}).length;
+    badge.textContent = `(${total} staged)`;
+}
+
+// ========== STYLE STAGING (lightweight) ==========
+/*
+If you already have an applyStyle() usage, change it to call applyStyleAndStage(element, property, value, unit)
+instead of the old one. This small function both applies the style live and records it for the staged CSS block.
+*/
+function applyStyleAndStage(element, property, value, unit) {
+    try {
+        switch (property) {
+            case 'width': element.style.width = value + 'px'; break;
+            case 'height': element.style.height = value + 'px'; break;
+            case 'border-radius': element.style.borderRadius = value + 'px'; break;
+            case 'box-shadow': element.style.boxShadow = `0 ${value}px ${Math.max(2, value)}px rgba(0,0,0,0.15)`; break;
+            case 'opacity': element.style.opacity = (value / 100).toString(); break;
+            case 'margin': element.style.margin = value + 'px'; break;
+            case 'padding': element.style.padding = value + 'px'; break;
+            default: element.style[property] = value + (unit || ''); break;
+        }
+    } catch (e) {
+        console.warn('applyStyleAndStage error:', e);
+    }
+
+    try {
+        const selector = determineCssSelector(element) || element.tagName.toLowerCase();
+        window.pendingStyleEdits[selector] = window.pendingStyleEdits[selector] || {};
+        let valueStr = (property === 'opacity') ? (value / 100).toString() : (value + (unit || (property === 'opacity' ? '' : 'px')));
+        window.pendingStyleEdits[selector][property] = valueStr;
+        updateCommitBadge();
+    } catch (e) {
+        console.warn('Could not stage style change:', e);
+    }
+}
+
+// ========== COMMIT ALL STAGED CHANGES ==========
+async function commitPendingChanges() {
+    const totalStaged = (window.pendingTextEdits ? window.pendingTextEdits.length : 0) + Object.keys(window.pendingStyleEdits || {}).length;
+    if (!totalStaged) { alert('No staged changes.'); return; }
+    if (!confirm(`Publish ${totalStaged} staged change(s) to the site now?`)) return;
+
+    setStatus('Building staged commit...', 'success');
+
+    // Fetch current index.html via proxy
+    const htmlResp = await fetch(`${API_BASE}/proxy/index.html`, {
+        headers: { "x-admin-token": adminToken, "x-username-token": usernameToken }
+    });
+    if (!htmlResp.ok) { alert('Could not load index.html via proxy for commit.'); return; }
+    let htmlContent = await htmlResp.text();
+
+    // Apply all staged text edits in order
+    for (const edit of (window.pendingTextEdits || [])) {
+        const { originalInnerHTML, originalTextContent, newText, tagName, className } = edit;
+        let replaced = false;
+
+        // Strategy A: exact originalInnerHTML replace (first occurrence)
+        if (!replaced && originalInnerHTML && htmlContent.indexOf(originalInnerHTML) !== -1) {
+            const newInner = createPreservedHTML(originalInnerHTML, originalTextContent, newText);
+            htmlContent = replaceFirstOccurrence(htmlContent, originalInnerHTML, newInner);
+            replaced = true;
+        }
+
+        // Strategy B: class-based tag match
+        if (!replaced && className) {
+            const tag = tagName || 'div';
+            const classEsc = escapeRegex(className);
+            const regex = new RegExp(`(<${tag}[^>]*class=(?:"[^"]*${classEsc}[^"]*"|'[^']*${classEsc}[^']*')[^>]*>)([\\s\\S]*?)(</${tag}>)`, 'i');
+            htmlContent = htmlContent.replace(regex, (m, openTag, content, closeTag) => {
+                if (!originalTextContent) return m;
+                const contentText = stripTags(content).replace(/\s+/g,' ');
+                if (contentText.includes(originalTextContent.replace(/\s+/g,' '))) {
+                    replaced = true;
+                    return openTag + createPreservedHTML(content, originalTextContent, newText) + closeTag;
+                }
+                return m;
+            });
+        }
+
+        // Strategy C: tag-level fallback
+        if (!replaced && tagName) {
+            const tag = tagName;
+            const tagRegex = new RegExp(`(<${tag}[^>]*>)([\\s\\S]*?)(</${tag}>)`, 'gi');
+            htmlContent = htmlContent.replace(tagRegex, (m, openTag, content, closeTag) => {
+                if (replaced) return m;
+                const contentText = stripTags(content).replace(/\s+/g,' ');
+                if (!originalTextContent || contentText.includes(originalTextContent)) {
+                    replaced = true;
+                    return openTag + createPreservedHTML(content, originalTextContent, newText) + closeTag;
+                }
+                return m;
+            });
+        }
+
+        // Final fallback: plain text replace
+        if (!replaced && originalTextContent && htmlContent.indexOf(originalTextContent) !== -1) {
+            htmlContent = htmlContent.replace(originalTextContent, newText);
+            replaced = true;
+        }
+
+        if (!replaced) console.warn('Could not find text in HTML during commit for edit:', edit);
+    }
+
+    // Build and inject staged CSS
+    const cssRules = [];
+    for (const selector of Object.keys(window.pendingStyleEdits || {})) {
+        const props = window.pendingStyleEdits[selector];
+        const declarations = Object.entries(props).map(([k,v]) => `${k}: ${v};`).join(' ');
+        cssRules.push(`${selector} { ${declarations} }`);
+    }
+    const cssBlock = `<style id="editor-staged-styles">\n${cssRules.join('\n')}\n</style>`;
+
+    if (htmlContent.indexOf('id="editor-staged-styles"') !== -1) {
+        htmlContent = htmlContent.replace(/<style[^>]*id=["']editor-staged-styles["'][\s\S]*?<\/style>/i, cssBlock);
+    } else if (htmlContent.indexOf('</head>') !== -1) {
+        htmlContent = htmlContent.replace(/<\/head>/i, cssBlock + '\n</head>');
+    } else if (htmlContent.indexOf('</body>') !== -1) {
+        htmlContent = htmlContent.replace(/<\/body>/i, cssBlock + '\n</body>');
+    } else {
+        htmlContent += '\n' + cssBlock;
+    }
+
+    setStatus('Attempting to publish staged changes...', 'success');
+
+    // Save the assembled index.html with immediate SHA retries
+    try {
+        await saveIndexHtmlWithImmediateShaRetries(htmlContent, { attempts: 6, pauseMs: 120 });
+        setStatus('Published staged changes ✔', 'success');
+        alert('All staged edits published!');
+        window.pendingTextEdits = [];
+        window.pendingStyleEdits = {};
+        updateCommitBadge();
+        loadPreviewFromProxy(); // refresh preview iframe
+    } catch (err) {
+        console.error('Failed to publish staged changes:', err);
+        alert('❌ Failed to publish staged changes: ' + (err && err.message ? err.message : err) + '\n\nPlease wait up to 1 minute between commits/updates and try again.');
+        setStatus('', 'error');
+    }
+}
+
+
+// Save index.html with immediate SHA fetch and retries (no worker changes required)
+async function saveIndexHtmlWithImmediateShaRetries(content, opts = {}) {
+    const attempts = opts.attempts || 6;
+    const pauseMs = typeof opts.pauseMs === 'undefined' ? 120 : opts.pauseMs;
+    let lastErr = null;
+    for (let i = 0; i < attempts; i++) {
+        try {
+            const fileSha = await fetchFileSha('index.html');
+            if (!fileSha) {
+                // try create
+                const createResp = await fetch(API_BASE + "/github/create-file", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-admin-token": adminToken,
-                        "x-username-token": usernameToken
-                    },
-                    body: JSON.stringify({
-                        repo: GITHUB_REPOPATH,
-                        path: 'style.css',
-                        content: updatedCSS,
-                        message: `Update CSS styles for ${cssSelector} via live editor`,
-                        branch: "main",
-                        sha: fileSha
-                    })
+                    headers: { "Content-Type": "application/json", "x-admin-token": adminToken, "x-username-token": usernameToken },
+                    body: JSON.stringify({ repo: GITHUB_REPOPATH, path: 'index.html', content, message: `Create index.html via staged editor`, branch: "main" })
                 });
-
-                if (resp.ok) {
-                    cssContent = updatedCSS; // Update local cache
-                    alert('✅ Styles saved successfully! Changes will appear on your live site.');
-                    pendingChanges = {};
-                } else {
-                    const error = await resp.json();
-                    alert('❌ Error saving styles: ' + (error.message || 'Unknown error'));
-                }
-
-            } catch (error) {
-                console.error('Error saving styles:', error);
-                alert('❌ Error saving styles: ' + error.message);
+                if (createResp.ok) return true;
+                const createErr = await createResp.json().catch(() => ({}));
+                lastErr = createErr.message || 'create-file failed';
+                await sleep(pauseMs);
+                continue;
             }
-        }
 
-        // ========== TEXT EDITING ==========
-        function openTextEditor() {
-            if (!selectedElement) return;
-            
-            const modal = document.getElementById('textEditorModal');
-            const textarea = document.getElementById('textEditorTextarea');
-            
-            textarea.value = selectedElement.textContent || selectedElement.innerText || '';
-            modal.style.display = 'flex';
-        }
+            const editResp = await fetch(API_BASE + "/github/edit-file", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "x-admin-token": adminToken, "x-username-token": usernameToken },
+                body: JSON.stringify({ repo: GITHUB_REPOPATH, path: 'index.html', content, message: `Publish staged edits via CMS`, branch: "main", sha: fileSha })
+            });
 
-        function closeTextEditor() {
-            document.getElementById('textEditorModal').style.display = 'none';
-        }
+            if (editResp.ok) return true;
+            const editErr = await editResp.json().catch(() => ({}));
+            lastErr = editErr.message || 'edit-file error';
 
-        async function saveTextEdit() {
-            const newText = document.getElementById('textEditorTextarea').value;
-            if (!selectedElement) return;
-
-            try {
-                const originalText = selectedElement.textContent;
-                
-                // Update the element temporarily
-                selectedElement.textContent = newText;
-                
-                // Find the HTML file and update it
-                const htmlContent = await fetchTextFile('index.html');
-                
-                if (htmlContent.includes(originalText)) {
-                    const updatedHTML = htmlContent.replace(originalText, newText);
-                    
-                    const fileSha = await fetchFileSha('index.html');
-                    const resp = await fetch(API_BASE + "/github/edit-file", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-admin-token": adminToken,
-                            "x-username-token": usernameToken
-                        },
-                        body: JSON.stringify({
-                            repo: GITHUB_REPOPATH,
-                            path: 'index.html',
-                            content: updatedHTML,
-                            message: `Update text content via live editor`,
-                            branch: "main",
-                            sha: fileSha
-                        })
-                    });
-
-                    if (resp.ok) {
-                        alert('✅ Text updated successfully!');
-                        closeTextEditor();
-                    } else {
-                        const error = await resp.json();
-                        alert('❌ Error saving text: ' + (error.message || 'Unknown error'));
-                    }
-                } else {
-                    alert('⚠️ Could not locate exact text in HTML file. Text may contain special formatting.');
-                }
-
-            } catch (error) {
-                console.error('Error saving text:', error);
-                alert('❌ Error saving text: ' + error.message);
+            if (lastErr && lastErr.toString().toLowerCase().includes('does not match')) {
+                await sleep(pauseMs);
+                continue;
             }
+            throw new Error(lastErr);
+        } catch (e) {
+            lastErr = (e && e.message) ? e.message : e;
+            if (i === attempts - 1) throw new Error(lastErr || 'Unknown save error');
+            await sleep(pauseMs);
         }
+    }
+    throw new Error(lastErr || 'Timed out saving');
+}
+
+// small helper: replace only the first occurrence (literal needle)
+function replaceFirstOccurrence(haystack, needle, replacement) {
+    const idx = haystack.indexOf(needle);
+    if (idx === -1) return haystack;
+    return haystack.slice(0, idx) + replacement + haystack.slice(idx + needle.length);
+}
+
+// ======= createPreservedHTML (keeps tags intact while changing text nodes) =======
+function createPreservedHTML(originalHTML, originalText, newText) {
+    if (!/<[a-z][\s\S]*>/i.test(originalHTML) && originalHTML.trim() === (originalText || '').trim()) {
+        return newText;
+    }
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = originalHTML;
+    const walker = document.createTreeWalker(tempDiv, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) nodes.push(node);
+    if (!nodes.length) return newText;
+
+    const SEP = '<<<NODE_SEP_STAGED>>>';
+    const concat = nodes.map(n => n.textContent || '').join(SEP);
+    const origTrim = (originalText || '').trim();
+
+    if (origTrim && concat.includes(origTrim)) {
+        const newConcat = concat.replace(origTrim, newText);
+        const parts = newConcat.split(SEP);
+        for (let i = 0; i < nodes.length; i++) nodes[i].textContent = parts[i] !== undefined ? parts[i] : '';
+        return tempDiv.innerHTML;
+    }
+
+    // fallback: replace first non-empty text node
+    for (let i = 0; i < nodes.length; i++) {
+        if ((nodes[i].textContent || '').trim()) {
+            nodes[i].textContent = newText;
+            return tempDiv.innerHTML;
+        }
+    }
+    return newText;
+}
+
+
+
+
+
+
 
         // ========== IMAGE HANDLING IN CSS EDITOR ==========
         function uploadImageForElement() {
@@ -2399,7 +2797,7 @@
             `;
         }
 
-        console.log('Advanced CMS Dashboard loaded successfully');
+        console.log('Advanced CMS Dashboard with CORS proxy support loaded successfully');
     </script>
 </body>
 </html>
