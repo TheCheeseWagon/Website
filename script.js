@@ -108,7 +108,14 @@
                 }
             });
         });
-    
+            // Toggle mobile nav open/close
+const navToggle = document.querySelector('.nav-toggle');
+const navMenu   = document.querySelector('nav ul');
+
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('active');
+  navMenu  .classList.toggle('active');
+});
         // Add animation on scroll
         const observerOptions = {
             threshold: 0.1,
