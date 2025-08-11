@@ -6,7 +6,8 @@
 
         :root {
 
-            --primary-orange:  #FF8C00;
+
+            --primary-orange:   #000000;
             --secondary-yellow: #FFD700;
             --accent-red: #FF6B35;
             --warm-white: #FFF8E1;
@@ -16,6 +17,7 @@
             --logo-orange: #FF8C00;
             --logo-yellow: #FFD700;
         
+
 }
 
         body {
@@ -901,3 +903,8 @@
 }
 p { color: rgb(255, 128, 0); font-style: italic; }
 
+
+
+/* editor-staged-styles START */
+:root { --primary-orange: #000000; }
+/* editor-staged-styles END */
