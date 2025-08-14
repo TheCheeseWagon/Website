@@ -209,34 +209,6 @@
                             style="border:0; border-radius: 12px; max-width: 90vw;"
                             allowfullscreen="" loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"></iframe>
-<div id="fbFallback" style="display:none; margin:12px 0;">
-  <a class="social-card" href="go/facebook.html" target="_blank" rel="noopener" aria-label="Open Facebook" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.08);text-decoration:none;color:#222;">
-    <i class="fab fa-facebook-f" aria-hidden="true" style="font-size:28px;"></i>
-    <div>
-      <strong>Facebook content blocked</strong>
-      <div>Click to open our page</div>
-    </div>
-  </a>
-</div>
-<script>
-(function(){
-  try {
-    var fb = document.getElementById('fbDesktopFrame');
-    if (!fb) return;
-    var loaded = false;
-    fb.addEventListener('load', function(){ loaded = true; });
-    setTimeout(function(){
-      if (!loaded) {
-        // hide iframe and show fallback
-        fb.style.display = 'none';
-        var fallback = document.getElementById('fbFallback');
-        if (fallback) fallback.style.display = 'block';
-      }
-    }, 3500);
-  } catch(e) {}
-})();
-</script>
-
                         <div style="text-align: center; font-size:0.94em; margin-top:0.7em;">
                             2803 Stone St, Port Huron, MI 48060
                         </div>
@@ -261,10 +233,10 @@
     <div class="container">
         <h2>Follow Our Journey</h2>
         <div class="social-links">
-            <a href="go/facebook.html" class="social-link" target="_blank">
+            <a href="https://www.facebook.com/CheeseWagonTruck" class="social-link" target="_blank">
                 <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="go/instagram.html" class="social-link" target="_blank">
+            <a href="https://www.instagram.com/cheese_wagon/" class="social-link" target="_blank">
                 <i class="fab fa-instagram"></i>
             </a>
             <a href="https://www.tiktok.com/@taryn.strausser" class="social-link" target="_blank">
@@ -287,14 +259,14 @@
                 </iframe>
                 <div style="margin-top:12px; font-size: 0.93em; color: #8B4513;">
                   <b>
-                    Follow <a href="go/instagram.html" target="_blank" rel="noopener" style="color:#FF8C00;">@cheese_wagon</a> on Instagram!
+                    Follow <a href="https://www.instagram.com/cheese_wagon/" target="_blank" rel="noopener" style="color:#FF8C00;">@cheese_wagon</a> on Instagram!
                   </b>
                 </div>
             </div>
 
 <!-- Desktop/tablet Facebook iframe -->
 <iframe 
-  id="fbDesktopFrame" class="fb-desktop"
+  class="fb-desktop"
   src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCheeseWagonTruck%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=false&hide_cover=false&show_facepile=false&appId"
   width="500" height="500"
   style="border:none;overflow:hidden"
@@ -306,7 +278,7 @@
 
 <!-- Mobile Facebook iframe -->
 <iframe 
-  id="fbMobileFrame" class="fb-mobile"
+  class="fb-mobile"
   src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FCheeseWagonTruck%2F&tabs=timeline&width=380&height=500&small_header=false&adapt_container_width=false&hide_cover=false&show_facepile=false&appId"
   width="380" height="500"
   style="border:none;overflow:hidden"
@@ -338,8 +310,8 @@
 
                 <div class="footer-section">
                     <h3>Follow Us</h3>
-                    <p><a href="go/facebook.html">Facebook</a></p>
-                    <p><a href="go/instagram.html">Instagram</a></p>
+                    <p><a href="https://www.facebook.com/CheeseWagonTruck">Facebook</a></p>
+                    <p><a href="https://www.instagram.com/cheese_wagon/">Instagram</a></p>
                     <p><a href="https://www.tiktok.com/@taryn.strausser">TikTok</a></p>
                 </div>
             </div>
@@ -355,5 +327,4 @@
     
 </body>
 </html>
-
 
