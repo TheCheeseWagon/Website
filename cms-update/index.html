@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced CMS Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="token-prompt-modal">
+        <div id="token-prompt-box">
+            <h2>Admin Access</h2>
+            <div>
+                <label>Username/Email</label><br>
+                <input type="text" id="admin-username-input" placeholder="Username or Email" autofocus>
+            </div>
+            <div>
+                <label>Password</label><br>
+                <input type="password" id="admin-token-input" placeholder="Admin Password">
+            </div>
+            <button onclick="submitToken()">Login</button>
+            <div id="login-error" class="error" style="margin-top:6px"></div>
+        </div>
+    </div>
+
+    <!-- Image Selection Modal -->
+    <div id="imageSelectModal" class="image-select-modal">
+        <div class="image-select-content">
+            <h3>Select an Image to Replace With</h3>
+            <div id="imageSelectGrid" class="image-select-grid"></div>
+            <div style="margin-top: 1rem; text-align: right;">
+                <button onclick="closeImageSelector()" style="background: #6c757d;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Picker Modal -->
+    <div id="colorPickerModal" class="color-picker-modal">
+        <div class="color-picker-content">
+            <div class="color-picker-header">
+                <h3>🎨 CSS Color Editor</h3>
+                <button onclick="closeColorPicker()" class="close-btn">×</button>
+            </div>
+            <div class="color-picker-body">
+                <div class="color-search-section">
+                    <label for="colorSearch">Search colors:</label>
+                    <input type="text" id="colorSearch" placeholder="Type to filter colors..." oninput="filterColorVariables(this.value)">
+                </div>
+                <div id="colorVariablesList" class="color-variables-list">
+                    <!-- Colors will be populated here -->
+                </div>
+                <div class="color-picker-actions">
+                    <div class="color-picker-status" id="colorPickerStatus"></div>
+                    <button onclick="stageColorChanges()" class="stage-colors-btn">Add Colors to Staged</button>
+                    <button onclick="resetColorChanges()" class="reset-colors-btn">Reset Colors</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CMS Main Page -->
+    <div id="cms-page" class="page active">
+        <button id="logout-btn" onclick="logout()" style="float:right; background: #888;">Logout</button>
+        <h1>🍕 Advanced CMS Dashboard</h1>
+        <div id="status"></div>
+
+        <!-- Main Navigation -->
+        <div class="main-nav">
+            <button class="nav-btn css-editor" onclick="switchToEditor()">🎨 CSS Editor</button>
+            <button class="nav-btn" onclick="scrollToSection('file-editor')">📝 File Editor</button>
+            <button class="nav-btn" onclick="scrollToSection('images-section')">🖼️ Images</button>
+            <button class="nav-btn" onclick="scrollToSection('menu-section')">🍔 Menu</button>
+        </div>
+
+        <!-- File Editor Section -->
+        <div id="file-editor" class="cms-panel">
+            <label for="cms-filename-select">Edit Any File</label>
+            <select id="cms-filename-select"></select>
+            <button onclick="loadFile()">Load</button>
+            <span id="cms-status"></span>
+            <textarea id="cms-content" spellcheck="false" placeholder="File contents (plain text)"></textarea>
+            <div>
+                <button onclick="saveFile()">Save/Publish</button>
+                <span id="cms-save-status"></span>
+            </div>
+        </div>
+
+        <!-- Images Section -->
+        <div id="images-section">
+            <h2>Images (TheCheeseWagon/WebSite/images/)</h2>
+            <button style="float:right;" onclick="showImageUploader()">Upload Image</button>
+            <input type="file" id="image-upload" accept="image/*" style="display:none">
+
+            <div class="img-section-title" onclick="toggleImageSection('inuse')">
+                Images in Use (linked from HTML/CSS/JS)
+            </div>
+            <div id="imglist-inuse-content" class="img-section-content">
+                <div id="imglist-inuse" class="imglist"></div>
+            </div>
+
+            <div class="img-section-title" onclick="toggleImageSection('unused')">
+                Unused Images (not referenced) <span style="font-size: 0.8em; color: #999;">(click to expand)</span>
+            </div>
+            <div id="imglist-unused-content" class="img-section-content collapsed">
+                <div id="imglist-unused" class="imglist"></div>
+            </div>
+        </div>
+
+        <!-- Menu Section -->
+        <div id="menu-section">
+            <h2>Add New Menu Item</h2>
+            <form id="add-form">
+                <div class="formrow">
+                    <input required name="section" placeholder="Section (e.g. Grilled Cheese)">
+                    <input required name="title" placeholder="Title">
+                    <input required name="description" placeholder="Description" style="width: 220px;">
+                    <input required name="price" placeholder="Price (e.g. 8.99)">
+                    <input type="submit" value="Add Item">
+                </div>
+            </form>
+
+            <h2>Menu Items (Click any cell to edit)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Section</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Save</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="menu-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CSS Editor Page -->
+    <div id="css-editor-page" class="page">
+        <!-- Editor Sidebar -->
+        <aside class="editor-sidebar">
+            <div class="editor-header">
+                <h1>🎨 CSS Live Editor</h1>
+                <p>Click any part of your website to customize it</p>
+            </div>
+            <div class="click-hint" id="clickHint">
+                Click anything in the preview to start editing
+            </div>
+            <div class="controls-area" id="controlsArea">
+                <div class="welcome-message">
+                    <div class="icon">🎯</div>
+                    <h3>Ready to customize!</h3>
+                    <p>Click on any image, text, button, or section in your website preview to start editing its appearance.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Preview Area -->
+        <section class="editor-preview">
+            <div class="editor-preview-header">
+                <span class="preview-title">Your Website Preview</span>
+                <button class="back-btn" onclick="backToCMS()">← Back to CMS</button>
+                <button class="color-picker-btn" onclick="openColorPicker()" title="Edit CSS Colors">🎨 Colors</button>
+                <button class="save-all-btn" onclick="commitPendingChanges()" title="Commit all staged changes">💾 Save All</button>
+                <button class="reset-btn" onclick="resetAllStyles()">🔄 Reset Everything</button>
+            </div>
+            <div class="iframe-container">
+                <iframe id="previewFrame" class="preview-iframe"></iframe>
+            </div>
+        </section>
+    </div>
+
+    <!-- Text Editor Modal -->
+    <div id="textEditorModal" class="text-editor-modal">
+        <div class="text-editor-content">
+            <div class="text-editor-header"><h3>Edit Text Content</h3><button class="text-editor-close" onclick="closeTextEditor()" aria-label="Close">×</button></div>
+            <textarea id="textEditorTextarea" placeholder="Enter your text here..."></textarea>
+            <div class="text-color-row" style="display:flex; gap:10px; align-items:center;">
+                <label for="textColorPicker" style="min-width:90px;">Text color:</label>
+                <input type="color" id="textColorPicker">
+                <input type="text" id="textColorHex" placeholder="#EEEEEE" value="#EEEEEE">
+            </div>
+            <div>
+                <button onclick="saveTextEdit()">Save Text</button>
+                <button onclick="saveTextColor()" style="background:#28a745;margin-left:8px;" id="saveColorBtn">Save Color</button>
+                <button onclick="closeTextEditor()" style="background: #6c757d;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script src="script.js" defer></script>
+</body>
+</html>
