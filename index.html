@@ -6,8 +6,7 @@
     <title>The Cheese Wagon - Gourmet Grilled Cheese Food Truck</title>
     
 <!-- Force all relative URLs (like 'instagram.json', 'images/...') to resolve against the live site -->
-<!-- CSP Fix: Base tag commented out to prevent CSP violations -->
-    <!-- <base href="https://thecheesewagon.github.io/Website/"> -->
+<base href="https://thecheesewagon.github.io/Website/">
 
         <!-- Favicon -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -394,7 +393,49 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script id="cms-preview-menu-patch">
+(function(){
+  try {
+    // Only inside the CMS blob preview; do nothing on the live site.
+    if (location.protocol !== 'blob:') return;
+
+    var PUBLIC_MENU_BASE = 'https://worker-d1-public.thecheesewagon.workers.dev/';
+    var origFetch = window.fetch.bind(window);
+
+    window.fetch = function(input, init){
+      var url = (typeof input === 'string') ? input : (input && input.url) || '';
+      try { url = new URL(url, location.origin).href; } catch(e){}
+
+      var isMenu =
+        url === 'menu' || url === './menu' || url === '/menu' ||
+        /(?:^|[/.])menu(?:[?#]|$)/.test(url) ||
+        url.indexOf(PUBLIC_MENU_BASE) === 0 ||
+        url.indexOf('https://worker-d1.thecheesewagon.workers.dev/menu') === 0;
+
+      if (isMenu) {
+        init = init || {};
+        init.credentials = 'include';
+
+        var h = new Headers((init && init.headers) || undefined);
+        try {
+          if (parent && parent.window && parent.window.__CSRF__ && !h.has('x-csrf')) {
+            h.set('x-csrf', parent.window.__CSRF__);
+          }
+        } catch(e){}
+
+        if (!h.has('accept')) h.set('accept', 'application/json');
+        init.headers = h;
+
+        // Route to the CMS’s same-origin menu endpoint to satisfy connect-src 'self'
+        return origFetch('/menu', init);
+      }
+
+      return origFetch(input, init);
+    };
+  } catch(e) { console.warn('cms preview patch failed', e); }
+})();
+</script>
+<script src="script.js"></script>
     
 <script>
 (function(){
