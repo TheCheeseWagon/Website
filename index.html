@@ -6,7 +6,8 @@
     <title>The Cheese Wagon - Gourmet Grilled Cheese Food Truck</title>
     
 <!-- Force all relative URLs (like 'instagram.json', 'images/...') to resolve against the live site -->
-<base href="https://thecheesewagon.github.io/Website/">
+<!-- CSP Fix: Base tag commented out to prevent CSP violations -->
+    <!-- <base href="https://thecheesewagon.github.io/Website/"> -->
 
         <!-- Favicon -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -393,55 +394,7 @@
         </div>
     </footer>
 
-    <script id="cms-preview-menu-patch-abs">
-(function(){
-  // Only run inside CMS blob live-preview
-  if (location.protocol !== 'blob:') return;
-  try {
-    // Resolve the CMS worker origin robustly (parent or referrer)
-    var ORIGIN = (function(){
-      try {
-        if (document.referrer) return new URL(document.referrer).origin;
-        if (parent && parent.location && parent.location.origin) return parent.location.origin;
-      } catch(e) {}
-      try { return location.origin; } catch(e){ return ''; }
-    })();
-    var ABS_MENU = ORIGIN ? (ORIGIN + '/menu') : '/menu';
-
-    var PUBLIC_MENU_BASE = 'https://worker-d1-public.thecheesewagon.workers.dev/menu';
-    var PRIVATE_MENU_BASE = 'https://worker-d1.thecheesewagon.workers.dev/menu';
-
-    var __orig = window.fetch.bind(window);
-    window.fetch = function(input, init){
-      try{
-        var url = (typeof input === 'string') ? input : (input && input.url) || '';
-        var abs = (function(){ try { return new URL(url, ORIGIN || location.origin).href; } catch(e){ return url; } })();
-        var looksLikeMenu =
-          url === 'menu' || url === './menu' || url === '/menu' ||
-          /(?:^|[/.])menu(?:[?#]|$)/.test(url) ||
-          abs.indexOf(PUBLIC_MENU_BASE) === 0 || abs.indexOf(PRIVATE_MENU_BASE) === 0;
-
-        if (looksLikeMenu) {
-          init = init || {};
-          init.credentials = 'include';
-          var h = new Headers((init && init.headers) || undefined);
-          try {
-            var csrf = null;
-            try { if (parent && parent.window) csrf = parent.window.__CSRF__; } catch(_){}
-            if (!csrf) csrf = window.__CSRF__;
-            if (csrf && !h.has('x-csrf')) h.set('x-csrf', csrf);
-          } catch(_){}
-          if (!h.has('accept')) h.set('accept','application/json');
-          init.headers = h;
-          return __orig(ABS_MENU, init);
-        }
-      }catch(_){}
-      return __orig(input, init);
-    };
-  } catch(e) { console.warn('cms preview abs shim failed', e); }
-})();
-</script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
     
 <script>
 (function(){
