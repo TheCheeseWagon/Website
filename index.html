@@ -393,46 +393,97 @@
         </div>
     </footer>
 
-    <script id="cms-preview-menu-patch">
+    
+<script id="cms-preview-render">
 (function(){
-  try {
-    // Only inside the CMS blob preview; do nothing on the live site.
-    if (location.protocol !== 'blob:') return;
+  if (location.protocol !== 'blob:') return; // Only inside CMS live preview
 
-    var PUBLIC_MENU_BASE = 'https://worker-d1-public.thecheesewagon.workers.dev/';
-    var origFetch = window.fetch.bind(window);
+  function toObjectBySection(data){
+    if (!data) return {};
+    if (!Array.isArray(data)) return data; // already object keyed by section
+    var by = {};
+    for (var i=0;i<data.length;i++){
+      var it = data[i] || {};
+      var sec = it.section || it.category || it.group || 'Menu';
+      (by[sec] = by[sec] || []).push(it);
+    }
+    return by;
+  }
 
-    window.fetch = function(input, init){
-      var url = (typeof input === 'string') ? input : (input && input.url) || '';
-      try { url = new URL(url, location.origin).href; } catch(e){}
+  function iconFor(section){
+    var s = (section||'').toLowerCase();
+    if (s.indexOf('grill')>=0) return 'fa-fire-burner';
+    if (s.indexOf('breakfast')>=0) return 'fa-egg';
+    if (s.indexOf('side')>=0) return 'fa-bread-slice';
+    if (s.indexOf('drink')>=0 || s.indexOf('beverage')>=0) return 'fa-mug-hot';
+    return 'fa-utensils';
+  }
 
-      var isMenu =
-        url === 'menu' || url === './menu' || url === '/menu' ||
-        /(?:^|[/.])menu(?:[?#]|$)/.test(url) ||
-        url.indexOf(PUBLIC_MENU_BASE) === 0 ||
-        url.indexOf('https://worker-d1.thecheesewagon.workers.dev/menu') === 0;
+  function renderMenuCards(menu){
+    var grid = document.getElementById('menu-card-grid');
+    if (!grid) return;
+    if (grid.children.length) return; // don't double-render if site JS ran
 
-      if (isMenu) {
-        init = init || {};
-        init.credentials = 'include';
+    var obj = toObjectBySection(menu);
+    var html = [];
+    html.push('<div class="menu-card-grid">');
+    Object.keys(obj).forEach(function(section){
+      var items = obj[section] || [];
+      html.push(
+        '<div class="menu-card">',
+          '<div class="menu-content">',
+            '<div class="menu-header">',
+              '<i class="fas '+iconFor(section)+'"></i>',
+              '<h3>'+section+'</h3>',
+            '</div>',
+            '<div class="menu-divider"></div>',
+            items.map(function(item){
+              var title = (item.title || item.name || '').toString();
+              var desc  = (item.description || item.desc || '').toString();
+              var price = (item.price != null ? item.price : (item.cost || '')).toString();
+              return [
+                '<div class="menu-item">',
+                  '<div class="menu-item-details">',
+                    '<div class="menu-item-title">'+title+'</div>',
+                    '<div class="menu-item-description">'+desc+'</div>',
+                  '</div>',
+                  '<div class="menu-item-price">'+price+'</div>',
+                '</div>'
+              ].join('');
+            }).join(''),
+          '</div>',
+        '</div>'
+      );
+    });
+    html.push('</div>');
+    grid.innerHTML = html.join('');
+  }
 
-        var h = new Headers((init && init.headers) || undefined);
-        try {
-          if (parent && parent.window && parent.window.__CSRF__ && !h.has('x-csrf')) {
-            h.set('x-csrf', parent.window.__CSRF__);
-          }
-        } catch(e){}
-
-        if (!h.has('accept')) h.set('accept', 'application/json');
-        init.headers = h;
-
-        // Route to the CMS’s same-origin menu endpoint to satisfy connect-src 'self'
-        return origFetch('/menu', init);
+  function attachCsrf(init){
+    try {
+      var h = new Headers((init && init.headers) || undefined);
+      if (parent && parent.window && parent.window.__CSRF__ && !h.has('x-csrf')) {
+        h.set('x-csrf', parent.window.__CSRF__);
       }
+      if (!h.has('accept')) h.set('accept','application/json');
+      init = init || {};
+      init.headers = h;
+      init.credentials = 'include';
+    } catch(e){}
+    return init || {};
+  }
 
-      return origFetch(input, init);
-    };
-  } catch(e) { console.warn('cms preview patch failed', e); }
+  // Try /menu on the CMS worker (same-origin to satisfy connect-src 'self')
+  fetch('/menu', attachCsrf({}))
+    .then(function(r){ if (!r.ok) throw new Error('status '+r.status); return r.json(); })
+    .then(renderMenuCards)
+    .catch(function(err){
+      try {
+        var grid = document.getElementById('menu-card-grid');
+        if (grid && !grid.children.length) grid.innerHTML = '<p style="color:red;">Unable to load menu in preview.</p>';
+      } catch(e){}
+      console.warn('[preview] menu load failed', err);
+    });
 })();
 </script>
 <script src="script.js"></script>
