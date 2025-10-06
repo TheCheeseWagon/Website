@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+
+Commercial-use: allowed
+
+
+Attribution: TheCheeseWagon - https://thecheesewagon.github.io/Website/
