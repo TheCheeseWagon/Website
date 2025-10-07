@@ -927,5 +927,5 @@ p { color: rgb(255, 128, 0); font-style: italic; }
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
 /* editor-staged-styles START */
-.logo-image img { width: 30px; }
+.hero-logo img { width: 74px; }
 /* editor-staged-styles END */
