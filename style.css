@@ -926,3 +926,4 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 @media (max-width: 640px) {
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
+/* editor-staged-styles START */.logo-image img { width: 30px; }/* editor-staged-styles END */
