@@ -926,7 +926,7 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 
 /* editor-staged-styles:h_yrpehq START */
 /* selector: .hero-logo img */
-.hero-logo img { padding: 50px; }
+.hero-logo img { opacity: 0.32; padding: 50px; }
 /* editor-staged-styles:h_yrpehq END */
 
 /* editor-staged-styles:h_mcsjzd START */
