@@ -924,6 +924,11 @@ p { color: rgb(255, 128, 0); font-style: italic; }
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* editor-staged-styles:h_o6e4ee START */
+/* selector: .hero-content h1 */
+.hero-content h1 { font-size: 21px; }
+/* editor-staged-styles:h_o6e4ee END */
+
 /* editor-staged-styles:h_mcsjzd START */
 /* selector: .logo-image img */
 .logo-image img { border-radius: 0px; opacity: 0.37; }
