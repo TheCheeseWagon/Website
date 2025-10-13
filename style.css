@@ -6,6 +6,7 @@
 
         :root {
 
+
             --primary-orange:   #FF8C00;
             --secondary-yellow: #FFD700;
             --accent-red: #FF6B35;
@@ -78,6 +79,8 @@
     border-radius: 50px;
     opacity: 1;
 }
+
+
 
         .logo-text {
             font-family: 'Fredoka One', cursive;
