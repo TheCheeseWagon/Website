@@ -926,5 +926,5 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 
 /* editor-staged-styles:h_mcsjzd START */
 /* selector: .logo-image img */
-.logo-image img { opacity: 0.29; }
+.logo-image img { border-radius: 0px; opacity: 0.29; }
 /* editor-staged-styles:h_mcsjzd END */
