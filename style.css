@@ -1,0 +1,925 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+
+            --primary-orange:   #FF8C00;
+            --secondary-yellow: #FFD700;
+            --accent-red: #FF6B35;
+            --warm-white: #FFF8E1;
+            --dark-brown: #8B4513;
+            --light-cream: #FFF9E6;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --logo-orange: #FF8C00;
+            --logo-yellow: #FFD700;
+        
+
+}
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, var(--warm-white) 0%, var(--light-cream) 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-yellow) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-image {
+    width: auto; /* or your preferred width */
+    height: auto;
+    background: transparent;
+    padding: 0;
+    box-shadow: none; /* Optional */
+    transition: transform 0.3s ease; /* Needed for smoothness */
+}
+
+.logo-image:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.logo-image img {
+    width: 50px;
+    height: auto;
+    /* or your preferred height */
+    border-radius: 20px;
+    border-radius: 50px;
+    opacity: 1;
+}
+
+        .logo-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Hamburger toggle button (hidden on desktop) */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+  width: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2000;
+  margin-left: 10px;
+}
+.burger {
+  display: block;
+  width: 28px;
+  height: 4px;
+  margin: 4px auto;
+  background: #fff;
+  border-radius: 3px;
+  transition: 0.3s;
+}
+
+/* Hamburger menu & nav responsiveness */
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+  nav ul {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px; /* Adjust if your header is taller/shorter */
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-yellow) 100%);
+    z-index: 1500;
+    text-align: center;
+    border-radius: 0 0 18px 18px;
+    box-shadow: 0 4px 16px 4px rgba(0,0,0,0.10);
+    padding: 1.2rem 0 1.5rem 0;
+    margin: 0;
+  }
+  nav ul.active {
+    display: flex;
+  }
+  .header-content {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Hamburger animates into an "X" when active (optional flavor) */
+.nav-toggle.active .burger:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
+.nav-toggle.active .burger:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.active .burger:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
+
+        /* Hero Section */
+        .hero {
+            background: url('images/hero-bg.png') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 140px 0 80px;
+            position: relative;
+            overflow: hidden;
+          }
+          
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: 200px 200px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-logo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .hero-logo:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .hero-logo img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .hero h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary-orange);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Truck Image Section */
+        .truck-showcase {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .truck-showcase h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 3rem;
+        }
+
+        .truck-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .truck-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .truck-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .features h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, var(--light-cream) 0%, var(--warm-white) 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 1rem;
+        }
+
+        /* Menu Section */
+        .menu {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--warm-white) 0%, var(--light-cream) 100%);
+        }
+
+        .menu h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .menu-card-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+.menu-card {
+    width: 400px;
+    max-width: 95vw;
+    min-width: 290px;
+    background: rgba(45, 45, 45, 0.95);
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+ /*   transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    animation: subtleSway 8s ease-in-out infinite;
+    /* old margin-bottom: 30px; */
+ /*   margin: 24px 20px; /* new: vertical 24px, horizontal 20px (adjust as needed) */
+}
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('images/menu.png') center/cover;
+            z-index: 1;
+            opacity: 0.5;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+        }
+        .menu-card:hover::before {
+            opacity: 0.6;
+            transform: scale(1.05);
+        }
+        @keyframes subtleSway {
+            0%, 100% { 
+                transform: translateY(0px) rotateZ(0deg); 
+            }
+            25% { 
+                transform: translateY(-2px) rotateZ(0.5deg); 
+            }
+            50% { 
+                transform: translateY(0px) rotateZ(0deg); 
+            }
+            75% { 
+                transform: translateY(-1px) rotateZ(-0.3deg); 
+            }
+        }
+        .menu-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            animation: none;
+        }
+        .menu-content {
+            position: relative;
+            z-index: 3;
+            padding: 30px 25px;
+            color: white;
+        }
+        .menu-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        .menu-header i {
+            font-size: 1.5rem;
+            color: #FF8C00;
+        }
+        .menu-header h3 {
+            color: #FF8C00;
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+        }
+        .menu-divider {
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(90deg, #FFD700, #FF8C00);
+            border-radius: 2px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 16px;         /* Add horizontal padding so background spans edge-to-edge */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;                /* Ensure it fills the card */
+    box-sizing: border-box;
+    transition: background 0.3s, border-radius 0.3s;
+    position: relative;         /* For z-index stacking if needed */
+    z-index: 1;
+}
+.menu-item:hover {
+    background: rgba(255, 140, 0, 0.18);  /* Slightly more visible orange */
+    border-radius: 10px;
+    /* No padding changes! */
+}
+
+        .menu-item-details {
+            flex: 1;
+        }
+        .menu-item-title {
+            color: #FFD700;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+        .menu-item:hover .menu-item-title {
+            color: #FFF;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+        }
+        .menu-item-description {
+            color: #ddd;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+        .menu-item:hover .menu-item-description {
+            color: #FFF;
+        }
+        .menu-item-price {
+            color: #FF8C00;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+        .menu-item:hover .menu-item-price {
+            color: #FFD700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+            transform: scale(1.1);
+        }
+        /* Responsive design for various devices */
+        @media (max-width: 1200px) {
+            .menu-card-grid {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .menu h2 {
+                font-size: 2rem;
+            }
+            .menu-card {
+                width: 98vw;
+                margin: 1rem 0;
+            }
+            .menu-content {
+                padding: 18px 5vw;
+            }
+            .menu-header h3 {
+                font-size: 1.2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .menu-card {
+                width: 100%;
+                margin: 10px 0;
+                min-width: unset;
+            }
+            .menu-content {
+                padding: 16px 2vw;
+            }
+            .menu-header h3 {
+                font-size: 1rem;
+            }
+            .menu-item-title {
+                font-size: 1rem;
+            }
+            .menu-item-description {
+                font-size: 0.8rem;
+            }
+        }
+        
+
+        /* Reviews Section */
+        .reviews {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .reviews h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .review-card {
+            background: linear-gradient(135deg, var(--light-cream) 0%, var(--warm-white) 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+            position: relative;
+        }
+
+        .review-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--secondary-yellow);
+            font-family: serif;
+        }
+
+        .stars {
+            color: var(--secondary-yellow);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .review-text {
+            margin-bottom: 1rem;
+            font-style: italic;
+            color: #555;
+        }
+
+        .reviewer {
+            font-weight: 600;
+            color: var(--dark-brown);
+        }
+
+        .review-source {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Location Section */
+        .location {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--warm-white) 0%, var(--light-cream) 100%);
+        }
+
+        .location h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .location-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .location-card h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            color: var(--accent-red);
+            margin-bottom: 1rem;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-info i {
+            color: var(--primary-orange);
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        .map-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+            text-align: center;
+        }
+
+        .map-placeholder {
+            background: linear-gradient(135deg, var(--light-cream) 0%, var(--warm-white) 100%);
+            height: 400px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-brown);
+            font-size: 1.2rem;
+            border: 2px dashed var(--secondary-yellow);
+        }
+
+        /* Social Media Section */
+        .social-media {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .social-media h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .social-link {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--accent-red) 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .instagram-embed {
+            background: linear-gradient(135deg, var(--light-cream) 0%, var(--warm-white) 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-brown);
+            font-size: 1.2rem;
+            border: none;
+
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--dark-brown) 0%, var(--primary-orange) 100%);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-yellow);
+        }
+
+        .footer-section p, .footer-section a {
+            color: white;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--secondary-yellow);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero-logo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo-container {
+                justify-content: center;
+            }
+
+            .logo-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            nav ul {
+                justify-content: center;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .locations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        /* Cheese dripping animation */
+        .cheese-drip {
+            position: absolute;
+            background: var(--secondary-yellow);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: drip 3s infinite;
+        }
+
+        @keyframes drip {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100px); opacity: 0; }
+        }
+
+        /* Hover effects */
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+
+        .fb-embed-square {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  min-width: 250px;
+  padding: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.fb-embed-square .fb-page {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex;
+}
+
+@media (max-width: 600px) {
+  .fb-embed-square {
+    min-width: 190px;
+    min-height: 190px;
+  }
+}
+
+.fb-desktop {
+  display: block;
+}
+
+.fb-mobile {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .fb-desktop {
+    display: none !important;
+  }
+  .fb-mobile {
+    display: block !important;
+    width: 100% !important; /* To fit smaller screens if needed. */
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+.css-selected {
+  border-radius: 50px;
+  
+}
+p { color: rgb(255, 128, 0); font-style: italic; }
+
+/* Local Instagram gallery */
+.ig-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.ig-tile img,
+.ig-tile video {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow, 0 6px 20px rgba(0,0,0,.12));
+  transition: transform .2s ease;
+}
+.ig-tile:hover img,
+.ig-tile:hover video { transform: translateY(-2px); }
+@media (max-width: 640px) {
+  .ig-grid { grid-template-columns: repeat(2, 1fr); }
+}
