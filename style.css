@@ -923,3 +923,8 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 @media (max-width: 640px) {
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* editor-staged-styles:h_o6e4ee START */
+/* selector: .hero-content h1 */
+.hero-content h1 { font-size: 25px; }
+/* editor-staged-styles:h_o6e4ee END */
