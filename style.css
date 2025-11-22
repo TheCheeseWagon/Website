@@ -923,3 +923,15 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 @media (max-width: 640px) {
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Hero logo variant without white circle background */
+.hero-logo--no-bg {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Keep circular crop on the image itself when background is removed */
+.hero-logo--no-bg img {
+  border-radius: 50%;
+}
