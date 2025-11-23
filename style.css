@@ -924,14 +924,7 @@ p { color: rgb(255, 128, 0); font-style: italic; }
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Hero logo variant without white circle background */
-.hero-logo--no-bg {
-  background: transparent;
-  padding: 0;
-  box-shadow: none;
-}
-
-/* Keep circular crop on the image itself when background is removed */
-.hero-logo--no-bg img {
-  border-radius: 50%;
-}
+/* editor-staged-styles:h_o6e4ee START */
+/* selector: .hero-content h1 */
+.hero-content h1 { font-size: 70px; }
+/* editor-staged-styles:h_o6e4ee END */
