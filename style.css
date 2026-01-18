@@ -923,18 +923,3 @@ p { color: rgb(255, 128, 0); font-style: italic; }
 @media (max-width: 640px) {
   .ig-grid { grid-template-columns: repeat(2, 1fr); }
 }
-
-/* editor-staged-styles:h_x0p6hb START */
-/* selector: .hero-content p */
-.hero-content p { font-size: 28px; }
-/* editor-staged-styles:h_x0p6hb END */
-
-/* editor-staged-styles:h_yrpehq START */
-/* selector: .hero-logo img */
-.hero-logo img { padding: 50px; }
-/* editor-staged-styles:h_yrpehq END */
-
-/* editor-staged-styles:h_mcsjzd START */
-/* selector: .logo-image img */
-.logo-image img { width: 99px; }
-/* editor-staged-styles:h_mcsjzd END */
